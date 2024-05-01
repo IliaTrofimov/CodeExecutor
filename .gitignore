@@ -1,0 +1,10 @@
+.idea
+.vs
+node_modules
+obj
+.DS_STORE
+/Docker
+*.dll
+*.obj
+*bin
+*obj

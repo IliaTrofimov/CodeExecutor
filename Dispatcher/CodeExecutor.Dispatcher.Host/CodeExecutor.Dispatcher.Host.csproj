@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseAppHost>false</UseAppHost>
+    <LangVersion>12</LangVersion>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <UserSecretsId>dd88a817-299e-4f2b-b383-e6ba36d54169</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
+    <PackageReference Include="RabbitMQ.Client.Core.DependencyInjection" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="AutoMapper.Collection" Version="10.0.0" />
+  </ItemGroup>
+
+  <Target Name="OpenAPI" AfterTargets="Build" Condition="false">
+    <Exec Command="dotnet swagger tofile --output ../../Api/$(AssemblyName).yaml --yaml $(OutputPath)$(AssemblyName).dll v1" WorkingDirectory="$(ProjectDir)" />
+  </Target>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\Common\CodeExecutor.Common.Models\CodeExecutor.Common.Models.csproj" />
+    <ProjectReference Include="..\..\Common\CodeExecutor.Common\CodeExecutor.Common.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\CodeExecutor.DB\CodeExecutor.DB.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\CodeExecutor.Messaging\CodeExecutor.Messaging.csproj" />
+    <ProjectReference Include="..\CodeExecutor.Dispatcher.Contracts\CodeExecutor.Dispatcher.Contracts.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Content Include="..\..\.dockerignore">
+      <Link>.dockerignore</Link>
+    </Content>
+  </ItemGroup>
+</Project>

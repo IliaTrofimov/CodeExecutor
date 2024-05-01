@@ -1,0 +1,60 @@
+.execution-info{
+    text-align: left;
+    color: var(--bs-light);
+    background: transparent;
+    border-bottom: 1px solid var(--bs-secondary);
+}
+
+.execution-info{
+    text-align: left;
+    color: var(--bs-light);
+    background: transparent;
+}
+
+.execution-info:hover{
+    background-color: var(--bs-border-color);
+    color: var(--bs-dark);
+    border-bottom: 1px solid transparent;
+}
+
+.execution-info:hover a{
+    font-weight: bold;
+}
+
+.execution-info a:hover{
+    text-decoration-line: underline;
+}
+
+.execution-info a:active{
+    color: var(--bs-primary);
+}
+
+.execution-info .btn-close{
+    color: var(--bs-light) !important;
+}
+
+
+.execution-info a{
+    font-family: monospace;
+    color: inherit !important;
+}
+
+.execution-info a:hover{
+    cursor: pointer !important;
+    text-decoration: underline !important;
+}
+
+.execution-info a:active{
+    font-style: italic;
+    font-weight: 900 !important;
+}
+
+.execution-selected{
+    background-color: var(--bs-border-color);
+    color: var(--bs-dark);
+    border-bottom: 1px solid transparent;
+}
+
+.execution-selected a{
+    font-weight: 900 !important;
+}

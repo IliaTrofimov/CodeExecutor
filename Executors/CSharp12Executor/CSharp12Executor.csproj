@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>dotnet-CSharp12Executor-7007BFCE-39CF-42A7-A196-6E5619906F6C</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Dispatcher\CodeExecutor.Dispatcher.Contracts\CodeExecutor.Dispatcher.Contracts.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\CodeExecutor.Messaging\CodeExecutor.Messaging.csproj" />
+      <ProjectReference Include="..\BaseCSharpExecutor\BaseCSharpExecutor.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.9.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
+</Project>

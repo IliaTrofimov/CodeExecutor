@@ -1,0 +1,157 @@
+openapi: 3.0.1
+info:
+  title: dotnet-swagger
+  version: v1
+paths:
+  /auth/currentuser:
+    get:
+      tags:
+        - Auth
+      parameters:
+        - name: anonymousUserToken
+          in: header
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+  /auth/create:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+components:
+  schemas:
+    CreateUserRequest:
+      required:
+        - password
+        - username
+      type: object
+      properties:
+        username:
+          minLength: 1
+          type: string
+        password:
+          minLength: 1
+          type: string
+        email:
+          type: string
+          nullable: true
+      additionalProperties: false
+    LoginRequest:
+      required:
+        - password
+        - username
+      type: object
+      properties:
+        username:
+          minLength: 1
+          type: string
+        password:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    LoginResponse:
+      required:
+        - token
+        - userId
+        - username
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        username:
+          minLength: 1
+          type: string
+        token:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    UserInfo:
+      required:
+        - isSuperUser
+        - userId
+        - username
+      type: object
+      properties:
+        username:
+          minLength: 1
+          type: string
+        userId:
+          type: integer
+          format: int64
+        isSuperUser:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        email:
+          type: string
+          nullable: true
+        anonymousToken:
+          type: string
+          nullable: true
+      additionalProperties: false

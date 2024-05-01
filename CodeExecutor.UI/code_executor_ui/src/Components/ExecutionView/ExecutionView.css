@@ -1,0 +1,83 @@
+.execution-header{
+    display: flex;
+    flex-direction: row;
+    padding: 0.2rem 0.7rem;
+}
+
+.execution-status{
+    min-width: 0.7rem;
+}
+
+.execution-results{
+    max-height: 40vh;
+    flex-shrink: 1000;
+}
+
+.execution-results > .container-h{
+    flex-shrink: 1000;
+}
+
+
+.languages-selector{
+    border: 0;
+    border-radius: 0.375rem;
+    padding: 0.1rem 0.1rem;
+    background: var(--bs-dark-bg-subtle);
+    min-width: 10rem;
+}
+
+.languages-selector:hover{
+    background: var(--bs-border-color);
+}
+
+.tab-filler, .tab-header, .execution-header{
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    border-bottom: 1px solid var(--bs-border-color);
+    background: var(--bs-dark-bg-subtle);
+}
+
+.tab-header{
+    min-width: 8rem;
+    border: 0;
+    border-bottom: 1px solid var(--bs-secondary-bg);
+}
+
+.tab-header:hover{
+    background: var(--bs-border-color);
+}
+
+.tab-header:active{
+    border-bottom: 3px solid var(--bs-primary);
+    font-style: italic;
+}
+
+.tab-selected{
+    border-bottom: 3px solid var(--bs-tertiary-color);
+    font-weight: bold;
+}
+
+.tab-container{
+    padding: 0.2rem 0.7rem;
+    font-size: 10pt;
+    min-height: 10vh;
+    background: var(--bs-body-bg);
+}
+
+.execution-output{
+    min-height: 30vh;
+}
+
+.small-button{
+    color: var(--bs-light) !important;
+}
+
+.small-button:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.small-button:active{
+    color: var(--bs-primary) !important;
+}
