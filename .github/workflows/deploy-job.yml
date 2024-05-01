@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Stop and remove containers
-        run: docker-compose down -f "../../docker-compose.yml"
+        run: docker-compose -f "${{ github.action_path }}/docker-compose.yml" down
       - name: Remove unused data
         run: docker system prune -a -f
   deploy:
@@ -19,4 +19,4 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
       - name: Run docker-compose 
-        run: docker-compose up -d -f "../../docker-compose.yml"
+        run: docker-compose -f "${{ github.action_path }}/docker-compose.yml" up -d
