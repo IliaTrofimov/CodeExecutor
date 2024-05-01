@@ -1,0 +1,21 @@
+name: Deploy runner
+
+on:
+  push:
+    branches: [ "master" ]
+jobs:
+  prepare-environment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stop and remove containers
+        run: docker-compose down
+      - name: Remove unused data
+        run: docker system prune -a -f
+  deploy:
+    runs-on: ubuntu-latest
+    needs: prepare-environment
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Run docker-compose
+        run: docker-compose up -d
