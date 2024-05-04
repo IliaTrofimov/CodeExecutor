@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace CodeExecutor.Messaging;
 
-public class MessagingConfig 
+public class MessagingConfig : IMessagingConfig
 {
     private string host;
     private string username;
@@ -13,22 +13,22 @@ public class MessagingConfig
     public string Host
     {
         get => host;
-        private set => host = value ?? throw new ArgumentNullException(nameof(Host), "Missing host parameter");
+        private init => host = value ?? throw new ArgumentNullException(nameof(Host), "Missing host parameter");
     }
     public string Username  
     {
         get => username;
-        private set => username = value ?? throw new ArgumentNullException(nameof(Username), "Missing username parameter");
+        private init => username = value ?? throw new ArgumentNullException(nameof(Username), "Missing username parameter");
     }
     public string Password  
     {
         get => password;
-        private set => password = value ?? throw new ArgumentNullException(nameof(Password), "Missing password parameter");
+        private init => password = value ?? throw new ArgumentNullException(nameof(Password), "Missing password parameter");
     }
     public int Port 
     {
         get => port;
-        private set => port = value;
+        private init => port = value;
     }
     
     

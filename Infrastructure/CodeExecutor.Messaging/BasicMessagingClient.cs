@@ -10,7 +10,7 @@ public abstract class BasicMessagingClient: IDisposable
     protected readonly IConnection rabbitConnection;
     protected readonly ILogger<BasicMessageSender> logger;
     
-    protected BasicMessagingClient(MessagingConfig config, ILogger<BasicMessageSender> logger)
+    protected BasicMessagingClient(IMessagingConfig config, ILogger<BasicMessageSender> logger)
     {
         this.logger = logger;
         this.logger.LogDebug("Connecting to RabbitMQ");

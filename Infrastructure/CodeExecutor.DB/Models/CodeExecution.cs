@@ -9,7 +9,7 @@ public class CodeExecution : BaseEntity<Guid>
     public CodeExecution() : base()
     {
         RequestedAt = DateTimeOffset.Now;
-        UpdatedAt = DateTimeOffset.Now;
+        UpdatedAt = RequestedAt;
 
         var bytes = new byte[32];
         Random.Shared.NextBytes(bytes);

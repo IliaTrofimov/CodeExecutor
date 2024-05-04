@@ -6,10 +6,10 @@ using Microsoft.CodeAnalysis.Scripting;
 namespace CSharp12Executor;
 
 
-public class CSharp12Executor : BaseExecutor
+public class CSharpExecutor : BaseExecutor
 {
 
-    public CSharp12Executor(ICodeExecutionDispatcherClient dispatcherClient, ILogger<BaseExecutor> logger) 
+    public CSharpExecutor(ICodeExecutionDispatcherClient dispatcherClient, ILogger<BaseExecutor> logger) 
         : base(dispatcherClient, logger)
     {
     }

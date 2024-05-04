@@ -15,7 +15,7 @@ public abstract class BasicMessageReceiver<TMessage> : BasicMessagingClient, IMe
     protected readonly string exchange;
     
     
-    protected BasicMessageReceiver(MessageReceiverConfig config, ILogger<BasicMessageSender> logger) 
+    protected BasicMessageReceiver(IMessageReceiverConfig config, ILogger<BasicMessageSender> logger) 
         : base(config, logger)
     {
         queue = config.Queue;

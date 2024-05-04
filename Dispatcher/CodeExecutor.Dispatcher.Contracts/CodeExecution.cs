@@ -24,6 +24,9 @@ public class CodeExecution
 
     /// <summary>Execution finish time.</summary>
     public DateTimeOffset? FinishedAt { get; set; }
+    
+    /// <summary>Execution update time.</summary>
+    public DateTimeOffset? UpdatedAt { get; set; }
 
     /// <summary>Additional data about this execution.</summary>
     public string? Comment { get; set; }

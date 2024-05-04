@@ -1,7 +1,6 @@
 using AutoMapper;
 using CodeExecutor.Dispatcher.Contracts;
 using CodeExecutor.Dispatcher.Host.Services.Interfaces;
-using ILogger = Castle.Core.Logging.ILogger;
 
 
 namespace CodeExecutor.Dispatcher.Host.Services.Implementations;

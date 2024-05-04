@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace CodeExecutor.Messaging;
 
-public class MessageReceiverConfig : MessagingConfig
+public class MessageReceiverConfig : MessagingConfig, IMessageReceiverConfig
 {
     private string queue;
     private string exchange;
@@ -11,13 +11,13 @@ public class MessageReceiverConfig : MessagingConfig
     public string Queue  
     {
         get => queue;
-        private set => queue = value ?? throw new ArgumentNullException(nameof(Queue), "Missing queue parameter");
+        private init => queue = value ?? throw new ArgumentNullException(nameof(Queue), "Missing queue parameter");
     }
     
     public string Exchange  
     {
         get => exchange;
-        private set => exchange = value ?? throw new ArgumentNullException(nameof(Exchange), "Missing exchange parameter");
+        private init => exchange = value ?? throw new ArgumentNullException(nameof(Exchange), "Missing exchange parameter");
     }
 
 

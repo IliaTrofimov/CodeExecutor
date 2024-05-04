@@ -14,7 +14,7 @@ builder.Services.AddSingleton(new DispatcherApiConfig(config.GetSection("Api")))
 
 builder.Services.AddSingleton<IMessageReceiver<ExecutionStartMessage>, ExecutionMessageReceiver>();
 builder.Services.AddSingleton<ICodeExecutionDispatcherClient, CodeExecutionDispatcherClient>();
-builder.Services.AddSingleton<BaseExecutor, CSharp12Executor.CSharp12Executor>();
+builder.Services.AddSingleton<BaseExecutor, CSharp12Executor.CSharpExecutor>();
 builder.Services.AddHttpClient();
 
 builder.Services.AddHostedService<ExecutionWorker>();

@@ -7,10 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 
 using CodeExecutor.Auth.Contracts;
-using CodeExecutor.Common;
 using CodeExecutor.Common.Models.Exceptions;
 using CodeExecutor.Common.Security;
-using CodeExecutor.DB.Utils;
 using CodeExecutor.DB.Models;
 using CodeExecutor.DB.Repository;
 
@@ -33,7 +31,7 @@ public sealed class AuthService : IAuthService, IDisposable
     
     public AuthService(IUsersRepository usersRepository, 
         ILogger<AuthService> logger,
-        AuthConfig config)
+        IAuthConfig config)
     {
         this.usersRepository = usersRepository;
         this.logger = logger;
