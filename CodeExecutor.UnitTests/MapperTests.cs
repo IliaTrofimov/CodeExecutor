@@ -103,6 +103,7 @@ public class MapperTests(ITestOutputHelper output) : TestBase(output)
         Assert.Equal(db.Language.Version, dtoSmall.Language.Version);
         
         Output.WriteLine("Mapper.Map<CodeExecutionExpanded>() IS SUCCESSFUL");
+        Assert.Fail("FAIL");
     }
 
     [Fact]
