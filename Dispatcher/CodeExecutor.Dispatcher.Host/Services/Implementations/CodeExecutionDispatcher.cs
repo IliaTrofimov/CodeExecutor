@@ -66,8 +66,11 @@ public sealed class CodeExecutionDispatcher : ICodeExecutionDispatcher
     public async Task SetExecutionResultsAsync(CodeExecutionResult result, string validationTag)
     {
         if (result.Data is null && result.Comment is null && result.IsError is null && result.Status is null)
+        {
+            logger.LogInformation("CodeExecution {executionId} was not updated: empty update request", result.Guid);
             return;
-
+        }
+            
         if (!await viewRepository.CheckSecretKeyAsync(result.Guid, validationTag))
             throw new UnauthorizedException("Cannot change this code execution.");
 

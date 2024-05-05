@@ -70,9 +70,9 @@ public class CodeExecutionRepositoryMock : InMemoryRepository<CodeExecution, Gui
             entity.IsError = isError.Value;
         if (comment is not null)
             entity.Comment = comment;
-        if (isFinished is not null)
+        if (isFinished == true || isError == true)
             entity.FinishedAt = DateTimeOffset.Now;
-        if (isStarted is not null)
+        if (isStarted == true)
             entity.StartedAt = DateTimeOffset.Now;
         
         return Task.FromResult(entity);

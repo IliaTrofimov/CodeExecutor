@@ -149,4 +149,150 @@ public class DispatcherTests : TestBase
         Assert.Contains("Unauthorized", ex.Message);
         Assert.Contains("Cannot view this execution", ex.Message);
     }
+    
+    
+    [Theory]
+    [InlineData(false,  "new data", null)]
+    [InlineData(true,  "new data", null)]
+    [InlineData(false,  null, "new comment")]
+    [InlineData(true,  null, "new comment")]
+    [InlineData(null, "new data", "new comment")]
+    [InlineData(true, "new data", "new comment")]
+    public async Task SetExecutionResults(bool? isError, string? data, string? comment)
+    {
+        var guid = await StartExecutionDefault();
+        var db = await ExecutionsExplorerRepository.GetAsync(guid);
+        Assert.NotNull(db);
+        
+        var updatedAt = db.UpdatedAt;
+        var dbIsError = db.IsError;
+        var dbData = db.Result?.Data;
+        var dbComment = db.Comment;
+        
+        var executionResult = new CodeExecutionResult
+        {
+            Guid = guid,
+            IsError = isError,
+            Data = data,
+            Status = isError == true ? CodeExecutionStatus.Error : CodeExecutionStatus.Finished,
+            Comment = comment
+        };
+        await Task.Delay(1000);
+        await ExecutionDispatcher.SetExecutionResultsAsync(executionResult, db.SecretKey);
+        
+        var dbUpdated = await ExecutionsExplorerRepository.GetAsync(guid);
+        Assert.NotNull(dbUpdated);
+        
+        Assert.Equal(isError ?? dbIsError, dbUpdated.IsError);
+        Assert.Equal(data ?? dbData, dbUpdated.Result?.Data);
+        Assert.Equal(comment ?? dbComment, dbUpdated.Comment);
+        Assert.True(updatedAt < dbUpdated.UpdatedAt, "updatedAt < dbUpdated.UpdatedAt");
+    }
+    
+    [Theory]
+    [InlineData(true, CodeExecutionStatus.Error)]
+    [InlineData(true, CodeExecutionStatus.Pending)]
+    [InlineData(false, null)]
+    [InlineData(false, CodeExecutionStatus.Started)]
+    [InlineData(false, CodeExecutionStatus.Finished)]
+    [InlineData(false, CodeExecutionStatus.Pending)]
+    public async Task SetExecutionResultsCheckStatus(bool? isError, CodeExecutionStatus? status, CodeExecutionStatus? prevStatus = null)
+    {
+        var guid = await StartExecutionDefault();
+        var db = await ExecutionsExplorerRepository.GetAsync(guid);
+        Assert.NotNull(db);
+        
+        var updatedAt = db.UpdatedAt;
+        var requestedAt = db.RequestedAt;
+        var startedAtAt = db.StartedAt;
+        var finishedAt = db.FinishedAt;
+        
+        var executionResult = new CodeExecutionResult
+        {
+            Guid = guid,
+            IsError = isError,
+            Data = "new data",
+            Status = status,
+            Comment = "new comment"
+        };
+        await Task.Delay(1000);
+        await ExecutionDispatcher.SetExecutionResultsAsync(executionResult, db.SecretKey);
+        
+        var dbUpdated = await ExecutionsExplorerRepository.GetAsync(guid);
+        Assert.NotNull(dbUpdated);
+        Assert.True(updatedAt < dbUpdated.UpdatedAt, "updatedAt < dbUpdated.UpdatedAt");
+
+        switch (status)
+        {
+            case CodeExecutionStatus.Error or CodeExecutionStatus.Finished:
+                Assert.NotNull(dbUpdated.FinishedAt);
+                Assert.True(updatedAt < dbUpdated.FinishedAt, "updatedAt < dbUpdated.FinishedAt");
+                break;
+            case CodeExecutionStatus.Started:
+                Assert.Null(dbUpdated.FinishedAt);
+                Assert.NotNull(dbUpdated.StartedAt);
+                Assert.True(updatedAt < dbUpdated.StartedAt, "updatedAt < dbUpdated.StartedAt");
+                break;
+        }
+    }
+    
+    [Fact]
+    public async Task SetExecutionResultsEmpty()
+    {
+        var guid = await StartExecutionDefault();
+        var db = await ExecutionsExplorerRepository.GetAsync(guid);
+        Assert.NotNull(db);
+        
+        var updatedAt = db.UpdatedAt;
+        var dbIsError = db.IsError;
+        var dbData = db.Result?.Data;
+        var dbComment = db.Comment;
+        
+        var executionResult = new CodeExecutionResult { Guid = guid };
+        
+        await Task.Delay(1000);
+        await ExecutionDispatcher.SetExecutionResultsAsync(executionResult, db.SecretKey);
+        
+        var dbUpdated = await ExecutionsExplorerRepository.GetAsync(guid);
+        Assert.NotNull(dbUpdated);
+        
+        Assert.Equal(dbIsError, dbUpdated.IsError);
+        Assert.Equal(dbData, dbUpdated.Result?.Data);
+        Assert.Equal(dbComment, dbUpdated.Comment);
+        Assert.Equal(updatedAt, dbUpdated.UpdatedAt);
+    }
+    
+    [Fact]
+    public async Task SetExecutionResultsWrongValidationTag()
+    {
+        var guid = await StartExecutionDefault();
+        var db = await ExecutionsExplorerRepository.GetAsync(guid);
+        Assert.NotNull(db);
+        
+        var updatedAt = db.UpdatedAt;
+        var dbIsError = db.IsError;
+        var dbData = db.Result?.Data;
+        var dbComment = db.Comment;
+        
+        var executionResult = new CodeExecutionResult
+        {
+            Guid = guid,
+            IsError = true
+        };
+        
+        await Task.Delay(1000);
+        var ex = await Assert.ThrowsAsync<UnauthorizedException>(async () => 
+            await ExecutionDispatcher.SetExecutionResultsAsync(executionResult, "x"));
+
+        Assert.Contains("Cannot change", ex.Message);
+        
+        var dbUpdated = await ExecutionsExplorerRepository.GetAsync(guid);
+        Assert.NotNull(dbUpdated);
+        
+        Assert.Equal(dbIsError, dbUpdated.IsError);
+        Assert.Equal(dbData, dbUpdated.Result?.Data);
+        Assert.Equal(dbComment, dbUpdated.Comment);
+        Assert.Equal(updatedAt, dbUpdated.UpdatedAt);
+    }
+
 }
