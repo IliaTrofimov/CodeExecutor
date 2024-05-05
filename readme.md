@@ -1,6 +1,6 @@
 # Code Executor
 
-[![Build and test .NET](https://github.com/IliaTrofimov/CodeExecutor/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/IliaTrofimov/CodeExecutor/actions/workflows/build-and-test.yml)
+[![Build and test .NET](https://github.com/IliaTrofimov/CodeExecutor/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/IliaTrofimov/CodeExecutor/actions/workflows/build-and-test.yml) [![CodeQL](https://github.com/IliaTrofimov/CodeExecutor/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/IliaTrofimov/CodeExecutor/actions/workflows/github-code-scanning/codeql)
 
 ASP.NET demo project for remote code executing.
 
