@@ -64,8 +64,6 @@ public class DispatcherTests : TestBase
             CodeText = "hello world",
             Priority = ExecutionPriority.High
         };
-        const long userId = 1;
-
         var ex = await Assert.ThrowsAsync<BadRequestException>(async () => 
             await ExecutionDispatcher.StartCodeExecutionAsync(request, userId));
 
