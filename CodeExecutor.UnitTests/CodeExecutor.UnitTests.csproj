@@ -4,12 +4,8 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
-        
-        <XunitStartupAssembly>Abc</XunitStartupAssembly>
-        <XunitStartupFullName>Xyz</XunitStartupFullName>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,15 +15,11 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="coverlet.collector" Version="6.0.0">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Auth\CodeExecutor.Auth.Host\CodeExecutor.Auth.Host.csproj" />
-      <ProjectReference Include="..\Dispatcher\CodeExecutor.Dispatcher.Host\CodeExecutor.Dispatcher.Host.csproj" />
+      <ProjectReference Include="..\Dispatcher\CodeExecutor.Dispatcher.Host\CodeExecutor.Dispatcher.Services.csproj" />
       <ProjectReference Include="..\Executors\BaseCSharpExecutor\BaseCSharpExecutor.csproj" />
       <ProjectReference Include="..\Executors\CSharp12Executor\CSharp12Executor.csproj" />
     </ItemGroup>
