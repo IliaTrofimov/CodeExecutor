@@ -1,8 +1,7 @@
-using AutoMapper;
 using CodeExecutor.Common.Models.Exceptions;
 using CodeExecutor.Dispatcher.Contracts;
-using CodeExecutor.Dispatcher.Host.Services.Implementations;
-using CodeExecutor.Dispatcher.Host.Services.Interfaces;
+using CodeExecutor.Dispatcher.Services.Implementations;
+using CodeExecutor.Dispatcher.Services.Interfaces;
 using CodeExecutor.UnitTests.Mocks.Repositories;
 using CodeExecutor.UnitTests.Mocks.Services;
 using Xunit.Abstractions;

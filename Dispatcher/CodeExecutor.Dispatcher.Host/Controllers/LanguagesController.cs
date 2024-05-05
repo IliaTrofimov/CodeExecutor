@@ -1,6 +1,6 @@
+using CodeExecutor.Dispatcher.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using CodeExecutor.Dispatcher.Host.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace CodeExecutor.Dispatcher.Host.Controllers;

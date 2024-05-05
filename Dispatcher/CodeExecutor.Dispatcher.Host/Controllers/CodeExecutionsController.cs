@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using CodeExecutor.Common.Models.Exceptions;
 using CodeExecutor.Common.Security;
 using CodeExecutor.Dispatcher.Contracts;
-using CodeExecutor.Dispatcher.Host.Services.Interfaces;
+using CodeExecutor.Dispatcher.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 

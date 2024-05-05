@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using CodeExecutor.Dispatcher.Contracts;
-using CodeExecutor.Dispatcher.Host.Services.Interfaces;
+using CodeExecutor.Dispatcher.Services.Interfaces;
 
 
 namespace CodeExecutor.Dispatcher.Host.Controllers;

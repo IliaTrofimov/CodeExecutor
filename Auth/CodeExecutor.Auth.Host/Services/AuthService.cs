@@ -9,8 +9,8 @@ using System.IdentityModel.Tokens.Jwt;
 using CodeExecutor.Auth.Contracts;
 using CodeExecutor.Common.Models.Exceptions;
 using CodeExecutor.Common.Security;
-using CodeExecutor.DB.Models;
-using CodeExecutor.DB.Repository;
+using CodeExecutor.DB.Abstractions.Models;
+using CodeExecutor.DB.Abstractions.Repository;
 
 
 namespace CodeExecutor.Auth.Host.Services;

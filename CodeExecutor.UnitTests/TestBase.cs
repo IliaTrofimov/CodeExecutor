@@ -1,21 +1,18 @@
 using AutoMapper;
-using BaseCSharpExecutor;
-using CodeExecutor.DB.Repository;
-using CodeExecutor.Dispatcher.Host.Services.Interfaces;
-using CodeExecutor.Dispatcher.Host.Services.Utils;
+using CodeExecutor.Dispatcher.Services.Interfaces;
+using CodeExecutor.Dispatcher.Services.Utils;
 using CodeExecutor.UnitTests.Mocks.Repositories;
 using CodeExecutor.UnitTests.Mocks.Services;
-using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
 namespace CodeExecutor.UnitTests;
 
 public abstract class TestBase
 {
-    protected readonly IUsersRepository UsersRepository;
-    protected readonly ILanguagesRepository LanguagesRepository;
-    protected readonly ICodeExecutionsEditorRepository ExecutionsEditorRepository;
-    protected readonly ICodeExecutionsExplorerRepository ExecutionsExplorerRepository;
+    protected readonly DBRepo.IUsersRepository UsersRepository;
+    protected readonly DBRepo.ILanguagesRepository LanguagesRepository;
+    protected readonly DBRepo.ICodeExecutionsEditorRepository ExecutionsEditorRepository;
+    protected readonly DBRepo.ICodeExecutionsExplorerRepository ExecutionsExplorerRepository;
     
     protected readonly ICodeExecutionMessaging ExecutionMessaging;
 

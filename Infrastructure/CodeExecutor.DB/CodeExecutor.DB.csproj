@@ -31,6 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Common\CodeExecutor.Common.Models\CodeExecutor.Common.Models.csproj" />
     <ProjectReference Include="..\..\Common\CodeExecutor.Common\CodeExecutor.Common.csproj" />
+    <ProjectReference Include="..\CodeExecutor.DB.Abstractions\CodeExecutor.DB.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

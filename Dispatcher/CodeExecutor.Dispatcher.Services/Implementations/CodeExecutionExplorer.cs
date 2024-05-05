@@ -1,17 +1,17 @@
 using AutoMapper;
 using CodeExecutor.DB.Repository;
 using CodeExecutor.Dispatcher.Contracts;
-using CodeExecutor.Dispatcher.Host.Services.Interfaces;
+using CodeExecutor.Dispatcher.Services.Interfaces;
 
-namespace CodeExecutor.Dispatcher.Host.Services.Implementations;
+namespace CodeExecutor.Dispatcher.Services.Implementations;
 
 public sealed class CodeExecutionExplorer : ICodeExecutionExplorer
 {
-    private readonly ICodeExecutionsExplorerRepository viewRepository;
+    private readonly DbRepository.ICodeExecutionsExplorerRepository viewRepository;
     private readonly IMapper mapper;
     
 
-    public CodeExecutionExplorer(ICodeExecutionsExplorerRepository viewRepository,
+    public CodeExecutionExplorer(DbRepository.ICodeExecutionsExplorerRepository viewRepository,
         IMapper mapper)
     {
         this.viewRepository = viewRepository;

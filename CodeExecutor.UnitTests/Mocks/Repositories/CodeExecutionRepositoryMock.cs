@@ -1,11 +1,13 @@
-using CodeExecutor.DB.Models;
-using CodeExecutor.DB.Repository;
 using Microsoft.Extensions.Logging;
+
+using CodeExecution = CodeExecutor.DB.Abstractions.Models.CodeExecution;
+using SourceCode = CodeExecutor.DB.Abstractions.Models.SourceCode;
+using CodeExecutionResult = CodeExecutor.DB.Abstractions.Models.CodeExecutionResult;
 
 namespace CodeExecutor.UnitTests.Mocks.Repositories;
 
 public class CodeExecutionRepositoryMock : InMemoryRepository<CodeExecution, Guid>,
-    ICodeExecutionsExplorerRepository, ICodeExecutionsEditorRepository
+    DBRepo.ICodeExecutionsExplorerRepository, DBRepo.ICodeExecutionsEditorRepository
 {
     public CodeExecutionRepositoryMock(ILogger? logger = null) : base(logger) {}
     

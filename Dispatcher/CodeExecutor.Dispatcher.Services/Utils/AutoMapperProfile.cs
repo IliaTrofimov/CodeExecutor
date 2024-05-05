@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace CodeExecutor.Dispatcher.Host.Services.Utils;
+namespace CodeExecutor.Dispatcher.Services.Utils;
 
 public class AutoMapperProfile : Profile
 {

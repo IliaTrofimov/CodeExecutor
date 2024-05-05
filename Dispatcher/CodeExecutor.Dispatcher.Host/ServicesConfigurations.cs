@@ -1,8 +1,9 @@
 using System.Reflection;
 using CodeExecutor.Common.Security;
+using CodeExecutor.DB.Repository;
 using CodeExecutor.DB.ServicesConfiguration;
-using CodeExecutor.Dispatcher.Host.Services.Implementations;
-using CodeExecutor.Dispatcher.Host.Services.Interfaces;
+using CodeExecutor.Dispatcher.Services.Implementations;
+using CodeExecutor.Dispatcher.Services.Interfaces;
 
 namespace CodeExecutor.Dispatcher.Host;
 
@@ -10,9 +11,9 @@ public static class ServicesConfigurations
 {
     public static void AddServices(this IServiceCollection services, ConfigurationManager config)
     {
-        services.AddScoped<DbRepository.ICodeExecutionsExplorerRepository, DbRepository.CodeExecutionRepository>();
-        services.AddScoped<DbRepository.ICodeExecutionsEditorRepository, DbRepository.CodeExecutionRepository>();
-        services.AddScoped<DbRepository.ILanguagesRepository, DbRepository.LanguagesRepository>();
+        services.AddScoped<DbRepository.ICodeExecutionsExplorerRepository, CodeExecutionRepository>();
+        services.AddScoped<DbRepository.ICodeExecutionsEditorRepository, CodeExecutionRepository>();
+        services.AddScoped<DbRepository.ILanguagesRepository, LanguagesRepository>();
         
         services.AddScoped<IProgrammingLanguagesService, ProgrammingLanguagesService>();
         services.AddScoped<ICodeExecutionDispatcher, CodeExecutionDispatcher>();
@@ -21,11 +22,6 @@ public static class ServicesConfigurations
         services.AddScoped<ICodeExecutionExplorer, CodeExecutionExplorer>();
         
         services.AddHealthChecks().AddCheck<HealthCheckService>("DefaultHealthCheck");
-        
-        var tickerStr = config.GetSection("Extra")["Ticker"];
-        if (tickerStr is not null)
-            services.AddHostedService<TickerWorker>();
-        
         services.AddAutoMapper(Assembly.GetAssembly(typeof(Program)));
     }
 

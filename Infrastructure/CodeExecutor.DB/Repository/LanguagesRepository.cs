@@ -1,5 +1,6 @@
-using CodeExecutor.DB.Models;
 using Microsoft.EntityFrameworkCore;
+using CodeExecutor.DB.Abstractions.Models;
+using CodeExecutor.DB.Abstractions.Repository;
 
 namespace CodeExecutor.DB.Repository;
 

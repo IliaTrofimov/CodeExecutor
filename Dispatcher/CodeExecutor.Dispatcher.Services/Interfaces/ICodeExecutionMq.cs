@@ -1,6 +1,6 @@
-namespace CodeExecutor.Dispatcher.Host.Services.Interfaces;
+using CodeExecutor.Dispatcher.Contracts;
 
-using Contracts;
+namespace CodeExecutor.Dispatcher.Services.Interfaces;
 
 /// <summary>
 /// Message queue for dispatching code executions. 

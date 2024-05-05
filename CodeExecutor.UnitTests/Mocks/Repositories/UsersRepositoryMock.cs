@@ -1,10 +1,8 @@
-using CodeExecutor.DB.Models;
-using CodeExecutor.DB.Repository;
 using Microsoft.Extensions.Logging;
 
 namespace CodeExecutor.UnitTests.Mocks.Repositories;
 
-public class UsersRepositoryMock : InMemoryRepository<User, long>, IUsersRepository
+public class UsersRepositoryMock : InMemoryRepository<DBModels.User, long>, DBRepo.IUsersRepository
 {
     public UsersRepositoryMock(ILogger? logger = null) : base(logger) {}
     

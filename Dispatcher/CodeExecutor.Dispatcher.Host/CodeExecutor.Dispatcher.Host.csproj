@@ -32,6 +32,7 @@
     <ProjectReference Include="..\..\Infrastructure\CodeExecutor.DB\CodeExecutor.DB.csproj" />
     <ProjectReference Include="..\..\Infrastructure\CodeExecutor.Messaging\CodeExecutor.Messaging.csproj" />
     <ProjectReference Include="..\CodeExecutor.Dispatcher.Contracts\CodeExecutor.Dispatcher.Contracts.csproj" />
+    <ProjectReference Include="..\CodeExecutor.Dispatcher.Services\CodeExecutor.Dispatcher.Services.csproj" />
   </ItemGroup>
   
   <ItemGroup>

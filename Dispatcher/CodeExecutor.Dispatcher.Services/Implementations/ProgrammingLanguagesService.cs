@@ -1,19 +1,17 @@
 using AutoMapper;
-using CodeExecutor.DB.Models;
 using CodeExecutor.DB.Repository;
-using CodeExecutor.Dispatcher.Host.Services.Interfaces;
-
+using CodeExecutor.Dispatcher.Services.Interfaces;
 using LanguageDto = CodeExecutor.Dispatcher.Contracts.Language;
 
 
-namespace CodeExecutor.Dispatcher.Host.Services.Implementations;
+namespace CodeExecutor.Dispatcher.Services.Implementations;
 
 public sealed class ProgrammingLanguagesService : IProgrammingLanguagesService
 {
-    private readonly ILanguagesRepository context;
+    private readonly DbRepository.ILanguagesRepository context;
     private readonly IMapper mapper;
 
-    public ProgrammingLanguagesService(ILanguagesRepository context, IMapper mapper)
+    public ProgrammingLanguagesService(DbRepository.ILanguagesRepository context, IMapper mapper)
     {
         this.context = context;
         this.mapper = mapper;

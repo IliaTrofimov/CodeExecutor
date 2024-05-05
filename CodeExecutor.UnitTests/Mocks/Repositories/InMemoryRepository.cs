@@ -1,11 +1,12 @@
-using CodeExecutor.DB.Models;
-using CodeExecutor.DB.Repository;
 using Microsoft.Extensions.Logging;
 
 namespace CodeExecutor.UnitTests.Mocks.Repositories;
 
-public abstract class InMemoryRepository<TEntity, TKey> : IReadonlyRepository<TEntity>, IEditableRepository<TEntity>
-    where TEntity : BaseEntity<TKey>
+public abstract class InMemoryRepository<TEntity, TKey> : 
+    DBRepo.IReadonlyRepository<TEntity>, 
+    DBRepo.IEditableRepository<TEntity>
+
+    where TEntity : DBModels.BaseEntity<TKey>
     where TKey : notnull, new()
 {
     protected readonly Dictionary<TKey, TEntity> Data = new();

@@ -8,9 +8,12 @@ WORKDIR /src
 COPY ["Common/CodeExecutor.Common/CodeExecutor.Common.csproj", "Common/CodeExecutor.Common/"]
 COPY ["Common/CodeExecutor.Common.Models/CodeExecutor.Common.Models.csproj", "Common/CodeExecutor.Common.Models/"]
 COPY ["Infrastructure/CodeExecutor.DB/CodeExecutor.DB.csproj", "Infrastructure/CodeExecutor.DB/"]
+COPY ["Infrastructure/CodeExecutor.DB.Abstractions/CodeExecutor.DB.Abstractions.csproj", "Infrastructure/CodeExecutor.DB.Abstractions/"]
+COPY ["Infrastructure/CodeExecutor.Telemetry/CodeExecutor.Telemetry.csproj", "Infrastructure/CodeExecutor.Telemetry/"]
 COPY ["Infrastructure/CodeExecutor.Messaging/CodeExecutor.Messaging.csproj", "Infrastructure/CodeExecutor.Messaging/"]
 COPY ["Dispatcher/CodeExecutor.Dispatcher.Contracts/CodeExecutor.Dispatcher.Contracts.csproj", "Dispatcher/CodeExecutor.Dispatcher.Contracts/"]
 COPY ["Dispatcher/CodeExecutor.Dispatcher.Host/CodeExecutor.Dispatcher.Host.csproj", "Dispatcher/CodeExecutor.Dispatcher.Host/"]
+COPY ["Dispatcher/CodeExecutor.Dispatcher.Host/CodeExecutor.Dispatcher.Services.csproj", "Dispatcher/CodeExecutor.Dispatcher.Services/"]
 RUN dotnet restore "Dispatcher/CodeExecutor.Dispatcher.Host/CodeExecutor.Dispatcher.Host.csproj"
 COPY . .
 WORKDIR "/src/Dispatcher/CodeExecutor.Dispatcher.Host"

@@ -1,5 +1,5 @@
 using CodeExecutor.Dispatcher.Contracts;
-using CodeExecutor.Dispatcher.Host.Services.Interfaces;
+using CodeExecutor.Dispatcher.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 
 namespace CodeExecutor.UnitTests.Mocks.Services;

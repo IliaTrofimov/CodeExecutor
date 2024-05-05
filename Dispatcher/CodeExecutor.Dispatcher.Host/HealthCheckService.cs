@@ -1,9 +1,6 @@
-using System.Diagnostics;
-using CodeExecutor.Dispatcher.Host.Services.Interfaces;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Logging;
 
-namespace CodeExecutor.Dispatcher.Host.Services.Implementations;
+namespace CodeExecutor.Dispatcher.Host;
 
 public class HealthCheckService : IHealthCheck
 {

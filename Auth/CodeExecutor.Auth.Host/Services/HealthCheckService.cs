@@ -1,4 +1,4 @@
-using CodeExecutor.DB.Repository;
+using CodeExecutor.DB.Abstractions.Repository;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace CodeExecutor.Auth.Host.Services;

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using CodeExecutor.DB.Abstractions.Repository;
 
 namespace CodeExecutor.DB.Repository;
 

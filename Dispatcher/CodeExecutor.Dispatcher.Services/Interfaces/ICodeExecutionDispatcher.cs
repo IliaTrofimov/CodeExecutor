@@ -1,6 +1,6 @@
 using CodeExecutor.Dispatcher.Contracts;
 
-namespace CodeExecutor.Dispatcher.Host.Services.Interfaces;
+namespace CodeExecutor.Dispatcher.Services.Interfaces;
 
 /// <summary>
 /// Create new code executions.
