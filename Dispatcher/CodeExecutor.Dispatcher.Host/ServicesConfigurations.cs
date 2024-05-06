@@ -4,6 +4,7 @@ using CodeExecutor.DB;
 using CodeExecutor.DB.Repository;
 using CodeExecutor.Dispatcher.Services.Implementations;
 using CodeExecutor.Dispatcher.Services.Interfaces;
+using CodeExecutor.Dispatcher.Services.Utils;
 
 namespace CodeExecutor.Dispatcher.Host;
 
@@ -22,7 +23,7 @@ public static class ServicesConfigurations
         services.AddScoped<ICodeExecutionExplorer, CodeExecutionExplorer>();
         
         services.AddHealthChecks().AddCheck<HealthCheckService>("DefaultHealthCheck");
-        services.AddAutoMapper(Assembly.GetAssembly(typeof(Program)));
+        services.AddAutoMapper(o => o.AddProfile<AutoMapperProfile>());
     }
 
     public static void AddConfigs(this IServiceCollection services, ConfigurationManager config)

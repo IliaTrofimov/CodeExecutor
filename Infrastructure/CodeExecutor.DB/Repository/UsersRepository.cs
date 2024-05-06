@@ -7,7 +7,7 @@ namespace CodeExecutor.DB.Repository;
 
 public class UsersRepository : DefaultEfRepository<User>, IUsersRepository
 {
-    public UsersRepository(DbContext context) : base(context)
+    public UsersRepository(DataContext context) : base(context)
     { 
     }
 
