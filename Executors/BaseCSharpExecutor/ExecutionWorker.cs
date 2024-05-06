@@ -1,5 +1,6 @@
 using CodeExecutor.Dispatcher.Contracts;
 using CodeExecutor.Messaging;
+using CodeExecutor.Messaging.Abstractions.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 

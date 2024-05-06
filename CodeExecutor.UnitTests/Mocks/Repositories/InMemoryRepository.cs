@@ -1,10 +1,9 @@
 using Microsoft.Extensions.Logging;
 
+
 namespace CodeExecutor.UnitTests.Mocks.Repositories;
 
-public abstract class InMemoryRepository<TEntity, TKey> : 
-    DBRepo.IReadonlyRepository<TEntity>, 
-    DBRepo.IEditableRepository<TEntity>
+public abstract class InMemoryRepository<TEntity, TKey> : DBRepo.IReadonlyRepository<TEntity>, DBRepo.IEditableRepository<TEntity>
 
     where TEntity : DBModels.BaseEntity<TKey>
     where TKey : notnull, new()

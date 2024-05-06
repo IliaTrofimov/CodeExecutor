@@ -1,25 +1,22 @@
 using Microsoft.Extensions.Logging;
 
-using CodeExecution = CodeExecutor.DB.Abstractions.Models.CodeExecution;
-using SourceCode = CodeExecutor.DB.Abstractions.Models.SourceCode;
-using CodeExecutionResult = CodeExecutor.DB.Abstractions.Models.CodeExecutionResult;
 
 namespace CodeExecutor.UnitTests.Mocks.Repositories;
 
-public class CodeExecutionRepositoryMock : InMemoryRepository<CodeExecution, Guid>,
+public class CodeExecutionRepositoryMock : InMemoryRepository<DBModels.CodeExecution, Guid>,
     DBRepo.ICodeExecutionsExplorerRepository, DBRepo.ICodeExecutionsEditorRepository
 {
     public CodeExecutionRepositoryMock(ILogger? logger = null) : base(logger) {}
     
     
-    public Task<CodeExecution?> GetSourceCodeAsync(Guid guid, CancellationToken cancellationToken = default)
+    public Task<DBModels.CodeExecution?> GetSourceCodeAsync(Guid guid, CancellationToken cancellationToken = default)
     {
         Logger?.LogDebug($"MOCK {nameof(GetSourceCodeAsync)}");
         Data.TryGetValue(guid, out var entity);
         return Task.FromResult(entity);
     }
 
-    public Task<CodeExecution?> GetResultAsync(Guid guid, CancellationToken cancellationToken = default)
+    public Task<DBModels.CodeExecution?> GetResultAsync(Guid guid, CancellationToken cancellationToken = default)
     {
         Logger?.LogDebug($"MOCK {nameof(GetResultAsync)}");
         Data.TryGetValue(guid, out var entity);
@@ -34,37 +31,37 @@ public class CodeExecutionRepositoryMock : InMemoryRepository<CodeExecution, Gui
             : Task.FromResult(entity.SecretKey == validationTag);
     }
 
-    public Task<CodeExecution> Create(long userId, long languageId, string sourceCode, CancellationToken cancellationToken = default)
+    public Task<DBModels.CodeExecution> Create(long userId, long languageId, string sourceCode, CancellationToken cancellationToken = default)
     {
         Logger?.LogDebug($"MOCK {nameof(CodeExecutionRepositoryMock)}.{nameof(Create)}");
         
         var id = NextKey();
-        return Create(new CodeExecution
+        return Create(new DBModels.CodeExecution
         {
             Id = id,
             InitiatorId = userId,
             LanguageId = languageId,
-            SourceCode = new SourceCode
+            SourceCode = new DBModels.SourceCode
             {
                 Id = id,
                 CodeText = sourceCode
             },
-            Result = new CodeExecutionResult
+            Result = new DBModels.CodeExecutionResult
             {
                 Id = id
             }
         });
     }
 
-    public Task<CodeExecution?> SetResult(Guid guid, string? data, string? comment = null, bool? isStarted = null, bool? isFinished = null,
+    public Task<DBModels.CodeExecution?> SetResult(Guid guid, string? data, string? comment = null, bool? isStarted = null, bool? isFinished = null,
         bool? isError = null, CancellationToken cancellationToken = default)
     {
         Logger?.LogDebug($"MOCK {nameof(SetResult)}");
 
         if (!Data.TryGetValue(guid, out var entity))
-            return Task.FromResult<CodeExecution?>(null);
+            return Task.FromResult<DBModels.CodeExecution?>(null);
         
-        entity.Result ??= new CodeExecutionResult();
+        entity.Result ??= new DBModels.CodeExecutionResult();
         entity.Result.Data = data;
         entity.UpdatedAt = DateTimeOffset.Now;
 

@@ -1,5 +1,9 @@
+#region
+
 using System.Diagnostics;
 using System.Reflection;
+
+#endregion
 
 namespace CodeExecutor.Telemetry;
 

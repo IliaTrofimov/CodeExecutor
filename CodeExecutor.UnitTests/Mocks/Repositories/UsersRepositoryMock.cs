@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Logging;
 
+
 namespace CodeExecutor.UnitTests.Mocks.Repositories;
 
 public class UsersRepositoryMock : InMemoryRepository<DBModels.User, long>, DBRepo.IUsersRepository

@@ -50,7 +50,7 @@ public class CodeExecution : BaseEntity<Guid>
     [Required] public long LanguageId { get; set; }
         
     /// <summary>Programming language that has executed this request.</summary>
-    [Required] public Language Language { get; set; }
+    [Required] public Language Language { get; set; } = null!;
 
     
     /// <summary>Result data.</summary>

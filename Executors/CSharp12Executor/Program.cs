@@ -2,6 +2,7 @@ using BaseCSharpExecutor;
 using BaseCSharpExecutor.Api;
 using CodeExecutor.Dispatcher.Contracts;
 using CodeExecutor.Messaging;
+using CodeExecutor.Messaging.Abstractions.Services;
 
 
 var builder = Host.CreateApplicationBuilder(args);

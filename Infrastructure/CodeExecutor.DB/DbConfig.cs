@@ -1,7 +1,9 @@
 using CodeExecutor.DB.Abstractions;
 using Microsoft.Extensions.Configuration;
 
-namespace CodeExecutor.DB.ServicesConfiguration;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+namespace CodeExecutor.DB;
 
 public sealed class DbConfig : IDbConfig
 {

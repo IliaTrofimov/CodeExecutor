@@ -3,11 +3,11 @@ using CodeExecutor.Auth.Host;
 using CodeExecutor.Common.Logging;
 using CodeExecutor.Common.Middleware;
 using CodeExecutor.Common.Security;
-using CodeExecutor.DB.ServicesConfiguration;
+using CodeExecutor.DB;
 using Microsoft.OpenApi.Models;
 
 
-var project = Assembly.GetCallingAssembly().GetName().Name;
+var project = Assembly.GetCallingAssembly().GetName().Name!;
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 

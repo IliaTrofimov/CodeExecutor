@@ -1,9 +1,13 @@
+#region
+
 using System.Reflection;
-using CodeExecutor.Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+
+#endregion
 
 namespace CodeExecutor.Telemetry;
 
@@ -14,35 +18,57 @@ public static class ServicesConfigurations
         var telemetryConfig = config.GetSection("Telemetry");
         if (!telemetryConfig.Exists()) return;
 
-        var tracingConfig = telemetryConfig.GetSection("Tracing");
-        var tracingEnabled = tracingConfig.Exists();
-        
-        var metricsConfig = telemetryConfig.GetSection("Metrics");
-        var metricsEnabled = tracingConfig.Exists();
-        
-        if (tracingEnabled)
-        {
-            var uri = new Uri(tracingConfig.GetValue("Host"));
-            
-            services.AddOpenTelemetry().WithTracing(builder =>
-            {
-                builder.AddSqlClientInstrumentation();
-                builder.AddAspNetCoreInstrumentation();
-                builder.AddOtlpExporter(options =>
-                    options.Endpoint = uri
-                );
-                builder.SetResourceBuilder(ResourceBuilder.CreateDefault()
-                    .AddService(Assembly.GetCallingAssembly().GetName().Name.Replace(".Host", ""))
-                );
-            });
-        }
+        var serviceName = (Assembly.GetCallingAssembly().GetName().Name ?? "Service")
+            .Replace(".Host", "");
 
-        if (metricsEnabled)
+        SetupTelemetry(services, telemetryConfig, serviceName);
+        SetupMetrics(services, telemetryConfig, serviceName);
+    }
+
+    private static void SetupTelemetry(IServiceCollection services, IConfiguration config, string serviceName)
+    {
+        var tracingConfig = config.GetSection("Tracing");
+        if (!tracingConfig.Exists()) return;
+        
+        var host = tracingConfig.GetValue("Host");
+        var port = tracingConfig.GetIntValue("Port");
+        //var useHttpClient = !bool.TryParse(tracingConfig.GetValue("HttpInstrumentation"), out var parsed) || ;
+
+        services.AddOpenTelemetry().WithTracing(builder =>
         {
-            services.AddOpenTelemetry().WithMetrics(builder =>
-            {
-                
-            });
-        }
+            builder.AddSource(serviceName);
+            builder.AddSqlClientInstrumentation();
+            builder.AddAspNetCoreInstrumentation();
+            builder.AddOtlpExporter(options =>
+                options.Endpoint = new Uri($"{host}:{port}")
+            );
+            builder.SetResourceBuilder(ResourceBuilder.CreateDefault()
+                .AddService(serviceName, serviceVersion: "1.0.0")
+            );
+            builder.AddHttpClientInstrumentation(options =>
+                options.RecordException = true
+            );
+        });
+    }
+
+    private static void SetupMetrics(IServiceCollection services, IConfiguration config, string serviceName)
+    {
+        var metricsConfig = config.GetSection("Metrics");
+        if (!metricsConfig.Exists()) return;
+        
+        var host = metricsConfig.GetValue("Host");
+        var port = metricsConfig.GetIntValue("Port");
+        
+        services.AddOpenTelemetry().WithMetrics(builder =>
+        {
+            builder.AddAspNetCoreInstrumentation();
+            builder.AddOtlpExporter(options =>
+                options.Endpoint = new Uri($"{host}:{port}")
+            );
+            builder.SetResourceBuilder(ResourceBuilder.CreateDefault()
+                .AddService(serviceName, serviceVersion: "1.0.0")
+            );
+            builder.AddHttpClientInstrumentation();
+        });
     }
 }

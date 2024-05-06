@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using CodeExecutor.Dispatcher.Contracts;
 using CodeExecutor.Messaging;
+using CodeExecutor.Messaging.Services;
 using Microsoft.Extensions.Logging;
 
 namespace BaseCSharpExecutor;

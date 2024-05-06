@@ -16,7 +16,7 @@ public interface IEntity<out TKey> where TKey : notnull
 public abstract class BaseEntity<TKey> : IEntity<TKey>
     where TKey : notnull
 {
-    [Key] public TKey Id { get; set; } 
+    [Key] public TKey Id { get; set; } = default!;
 
     public override string ToString() => $"{GetType().Name}(Id={Id})";
 }

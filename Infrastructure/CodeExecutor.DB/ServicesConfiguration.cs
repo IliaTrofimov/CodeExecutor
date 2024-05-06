@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CodeExecutor.DB.ServicesConfiguration;
+namespace CodeExecutor.DB;
 
 public static class ServicesConfiguration
 {

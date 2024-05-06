@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Configuration;
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 namespace BaseCSharpExecutor.Api;
 
@@ -15,6 +16,6 @@ public class DispatcherApiConfig
 
     public DispatcherApiConfig(IConfiguration config)
     {
-        DispatcherUrl = config["DispatcherUrl"];
+        DispatcherUrl = config["DispatcherUrl"]!;
     }
 }
