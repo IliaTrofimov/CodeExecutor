@@ -1,4 +1,4 @@
-namespace CodeExecutor.DB.ServicesConfiguration;
+namespace CodeExecutor.DB.Abstractions;
 
 public interface IDbConfig
 {

@@ -1,7 +1,7 @@
+using CodeExecutor.Common.Configs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using CodeExecutor.Common.Models.Exceptions;
 
 namespace CodeExecutor.DB.ServicesConfiguration;
 

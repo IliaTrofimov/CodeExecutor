@@ -1,3 +1,4 @@
+using CodeExecutor.DB.Abstractions;
 using Microsoft.Extensions.Configuration;
 
 namespace CodeExecutor.DB.ServicesConfiguration;
