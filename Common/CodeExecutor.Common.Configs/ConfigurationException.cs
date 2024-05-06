@@ -1,4 +1,4 @@
-namespace CodeExecutor.Common.Models.Exceptions;
+namespace CodeExecutor.Common.Configs;
 
 public sealed class ConfigurationException : Exception
 {
