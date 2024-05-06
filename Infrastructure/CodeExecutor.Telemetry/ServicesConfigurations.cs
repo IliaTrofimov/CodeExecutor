@@ -1,6 +1,7 @@
 #region
 
 using System.Reflection;
+using CodeExecutor.Common.Models.Configs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Metrics;
