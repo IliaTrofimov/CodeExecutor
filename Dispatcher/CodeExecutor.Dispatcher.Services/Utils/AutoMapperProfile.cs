@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CodeExecutor.Dispatcher.Contracts;
 
 namespace CodeExecutor.Dispatcher.Services.Utils;
 
@@ -8,12 +9,12 @@ public class AutoMapperProfile : Profile
     {
         //        Source ------> Destination  
 
-        CreateMap<DbModel.CodeExecution, Contracts.CodeExecution>()
+        CreateMap<DbModel.CodeExecution, CodeExecution>()
             .ForMember(
                 d => d.Guid,
                 s => s.MapFrom(x => x.Id));
 
-        CreateMap<DbModel.CodeExecution, Contracts.CodeExecutionExpanded>()
+        CreateMap<DbModel.CodeExecution, CodeExecutionExpanded>()
             .ForMember(
                 d => d.Data,
                 s => s.MapFrom(x => x.Result != null ? x.Result.Data : null))
@@ -27,14 +28,15 @@ public class AutoMapperProfile : Profile
                 d => d.Guid,
                 s => s.MapFrom(x => x.Id));
 
-        CreateMap<Contracts.CodeExecutionRequest, DbModel.CodeExecution>()
+        CreateMap<CodeExecutionRequest, DbModel.CodeExecution>()
             .ForMember(
                 d => d.SourceCode, 
                 s => s.MapFrom(x => new DbModel.SourceCode { CodeText = x.CodeText }));
-        
-        CreateMap<Contracts.Language, DbModel.Language>().ReverseMap();
-        
-        CreateMap<DbModel.CodeExecution, Contracts.SourceCode>()
+
+        CreateMap<Language, DbModel.Language>();
+        CreateMap<DbModel.Language, Language>();
+
+        CreateMap<DbModel.CodeExecution, SourceCode>()
             .ForMember(
                 d => d.LanguageId,
                 s => s.MapFrom(x => x.LanguageId))
