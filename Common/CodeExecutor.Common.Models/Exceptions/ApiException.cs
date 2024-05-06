@@ -1,11 +1,28 @@
-﻿using System.Net;
+﻿using System.Collections;
+using System.Net;
 
 namespace CodeExecutor.Common.Models.Exceptions;
 
 /// <summary>
 /// Base exception class for all WebApi errors.
 /// </summary>
-public class ApiException : Exception
+public interface IApiException
+{
+    /// <summary>Name of this exception.</summary>
+    string ErrorType { get; }
+
+    /// <summary>Integer code of this exception.</summary>
+    int Code { get; }
+
+    IDictionary Data { get; }
+    string Message { get; }
+    string? StackTrace { get; }
+}
+
+/// <summary>
+/// Base exception class for all WebApi errors.
+/// </summary>
+public class ApiException : Exception, IApiException
 {
     /// <summary>Name of this exception.</summary>
     public string ErrorType { get; private set; }

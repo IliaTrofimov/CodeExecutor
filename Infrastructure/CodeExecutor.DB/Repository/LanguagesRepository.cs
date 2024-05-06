@@ -6,7 +6,7 @@ namespace CodeExecutor.DB.Repository;
 
 public sealed class LanguagesRepository : DefaultEfRepository<Language>, ILanguagesRepository
 {
-    public LanguagesRepository(DataContext context) : base(context)
+    public LanguagesRepository(DbContext context) : base(context)
     {
     }
     

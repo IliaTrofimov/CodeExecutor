@@ -1,3 +1,4 @@
+using CodeExecutor.Common.Models.Configs;
 using Microsoft.Extensions.Configuration;
 
 namespace CodeExecutor.Common.Security;
@@ -7,7 +8,6 @@ public class AuthConfig : IAuthConfig
     private string key;
     private string issuer;
     private string audience;
-    private int tokenLifespan;
 
     public string Key
     {
@@ -24,11 +24,7 @@ public class AuthConfig : IAuthConfig
         get => audience;
         private set => audience = value ?? throw new ArgumentNullException(nameof(Audience), "Missing audience parameter");
     }
-    public int TokenLifespanMinutes
-    {
-        get => tokenLifespan;
-        private set => tokenLifespan = value;
-    }
+    public int TokenLifespanMinutes { get; private set; }
 
 
     public AuthConfig(IConfiguration config) 

@@ -1,11 +1,10 @@
 using System.Reflection;
 using CodeExecutor.Auth.Host;
-using Microsoft.OpenApi.Models;
-
 using CodeExecutor.Common.Logging;
 using CodeExecutor.Common.Middleware;
 using CodeExecutor.Common.Security;
 using CodeExecutor.DB.ServicesConfiguration;
+using Microsoft.OpenApi.Models;
 
 
 var project = Assembly.GetCallingAssembly().GetName().Name;

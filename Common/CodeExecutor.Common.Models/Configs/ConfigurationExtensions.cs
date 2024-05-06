@@ -1,6 +1,7 @@
+using CodeExecutor.Common.Models.Exceptions;
 using Microsoft.Extensions.Configuration;
 
-namespace CodeExecutor.Common.Configs;
+namespace CodeExecutor.Common.Models.Configs;
 
 public static class ConfigurationExtensions
 {

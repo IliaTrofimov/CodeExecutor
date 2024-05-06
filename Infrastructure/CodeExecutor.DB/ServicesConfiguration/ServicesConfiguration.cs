@@ -1,4 +1,4 @@
-using CodeExecutor.Common.Configs;
+using CodeExecutor.Common.Models.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

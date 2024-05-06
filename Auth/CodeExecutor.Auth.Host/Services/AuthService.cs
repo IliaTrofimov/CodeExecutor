@@ -7,8 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 
 using CodeExecutor.Auth.Contracts;
+using CodeExecutor.Common.Models.Configs;
 using CodeExecutor.Common.Models.Exceptions;
-using CodeExecutor.Common.Security;
 using CodeExecutor.DB.Abstractions.Models;
 using CodeExecutor.DB.Abstractions.Repository;
 

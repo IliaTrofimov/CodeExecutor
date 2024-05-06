@@ -1,5 +1,8 @@
 namespace CodeExecutor.Common.Models.Exceptions;
 
+/// <summary>
+/// Cannot execute operation because of inner infrastructure error.
+/// </summary>
 public class InfrastructureException : ApiException
 {
     public InfrastructureException(string reason, Exception? innerException = null)

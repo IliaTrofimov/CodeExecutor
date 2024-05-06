@@ -1,14 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-
-using CodeExecutor.DB.Utils;
 using CodeExecutor.DB.Abstractions.Models;
 using CodeExecutor.DB.Abstractions.Repository;
+using CodeExecutor.DB.Exceptions;
 
 namespace CodeExecutor.DB.Repository;
 
 public class UsersRepository : DefaultEfRepository<User>, IUsersRepository
 {
-    public UsersRepository(DataContext context) : base(context)
+    public UsersRepository(DbContext context) : base(context)
     { 
     }
 

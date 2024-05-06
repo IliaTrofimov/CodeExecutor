@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 using CodeExecutor.DB.Abstractions.Models;
 using CodeExecutor.DB.Abstractions.Repository;
-using CodeExecutor.DB.Utils;
+using CodeExecutor.DB.Exceptions;
 
 namespace CodeExecutor.DB.Repository;
 
@@ -13,7 +13,7 @@ public class CodeExecutionRepository : DefaultEfRepository<CodeExecution>,
     private readonly DbSet<User> users;
     private readonly DbSet<Language> languages;
     
-    public CodeExecutionRepository(DataContext context) : base(context)
+    public CodeExecutionRepository(DbContext context) : base(context)
     {
         users = context.Set<User>();
         languages = context.Set<Language>();

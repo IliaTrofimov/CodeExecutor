@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using CodeExecutor.Common.Models.Exceptions;
 
+
 namespace CodeExecutor.Common.Models.Entities;
 
 public sealed class ApiFault
@@ -13,7 +14,9 @@ public sealed class ApiFault
     
     public string Message { get; private set; }
     
-    public Dictionary<string, string>? Data { get; private set; }
+    public Dictionary<string, string>? Data { get; }
+    
+    public string? StackTrace { get; private set; }
 
 
     private ApiFault(ApiException exception)
@@ -21,6 +24,7 @@ public sealed class ApiFault
         Code = exception.Code;
         Message = exception.Message;
         ErrorType = exception.ErrorType;
+        StackTrace = exception.StackTrace;
         
         if (exception.Data.Count > 0)
         {

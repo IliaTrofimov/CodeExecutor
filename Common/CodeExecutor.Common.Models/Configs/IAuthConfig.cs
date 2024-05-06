@@ -1,4 +1,4 @@
-namespace CodeExecutor.Common.Security;
+namespace CodeExecutor.Common.Models.Configs;
 
 public interface IAuthConfig
 {

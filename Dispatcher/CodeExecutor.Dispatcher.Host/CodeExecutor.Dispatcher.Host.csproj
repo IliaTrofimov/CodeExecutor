@@ -27,8 +27,8 @@
   </Target>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\Common\CodeExecutor.Common.Models\CodeExecutor.Common.Models.csproj" />
     <ProjectReference Include="..\..\Common\CodeExecutor.Common\CodeExecutor.Common.csproj" />
+    <ProjectReference Include="..\..\Common\CodeExecutor.Common.Models\CodeExecutor.Common.Models.csproj" />
     <ProjectReference Include="..\..\Infrastructure\CodeExecutor.DB\CodeExecutor.DB.csproj" />
     <ProjectReference Include="..\..\Infrastructure\CodeExecutor.Messaging\CodeExecutor.Messaging.csproj" />
     <ProjectReference Include="..\CodeExecutor.Dispatcher.Contracts\CodeExecutor.Dispatcher.Contracts.csproj" />
