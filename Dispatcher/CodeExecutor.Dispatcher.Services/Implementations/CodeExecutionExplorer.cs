@@ -54,6 +54,6 @@ public sealed class CodeExecutionExplorer : ICodeExecutionExplorer
             .Take(take ?? int.MaxValue);
 
         var executions = await query.ToListAsync();
-        return mapper.Map<List<CodeExecution>>(executions);
+        return mapper.Map<List<CodeExecution>>(executions)!;
     }
 }

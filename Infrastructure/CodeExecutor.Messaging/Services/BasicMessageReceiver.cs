@@ -1,10 +1,12 @@
 using System.Text;
 using System.Text.Json;
+using CodeExecutor.Messaging.Abstractions;
+using CodeExecutor.Messaging.Abstractions.Services;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace CodeExecutor.Messaging;
+namespace CodeExecutor.Messaging.Services;
 
 
 public abstract class BasicMessageReceiver<TMessage> : BasicMessagingClient, IMessageReceiver<TMessage>

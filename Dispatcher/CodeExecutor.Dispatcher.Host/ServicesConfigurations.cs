@@ -1,7 +1,7 @@
 using System.Reflection;
 using CodeExecutor.Common.Security;
+using CodeExecutor.DB;
 using CodeExecutor.DB.Repository;
-using CodeExecutor.DB.ServicesConfiguration;
 using CodeExecutor.Dispatcher.Services.Implementations;
 using CodeExecutor.Dispatcher.Services.Interfaces;
 

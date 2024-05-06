@@ -9,8 +9,4 @@ global using Microsoft.Extensions.Logging;
 
 
 global using CodeExecutor.Common.Models.Exceptions;
-
-global using DbModel = CodeExecutor.DB.Abstractions.Models;
 global using DbRepository = CodeExecutor.DB.Abstractions.Repository;
-
-global using Messaging = CodeExecutor.Messaging;

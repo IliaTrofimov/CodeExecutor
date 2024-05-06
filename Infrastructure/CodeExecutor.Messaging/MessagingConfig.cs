@@ -1,14 +1,16 @@
-using CodeExecutor.Common;
+using CodeExecutor.Common.Models.Configs;
+using CodeExecutor.Messaging.Abstractions;
 using Microsoft.Extensions.Configuration;
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 namespace CodeExecutor.Messaging;
 
 public class MessagingConfig : IMessagingConfig
 {
-    private string host;
-    private string username;
-    private string password;
-    private int port;
+    private string host = null!;
+    private string username = null!;
+    private string password = null!;
 
     public string Host
     {
@@ -25,13 +27,9 @@ public class MessagingConfig : IMessagingConfig
         get => password;
         private init => password = value ?? throw new ArgumentNullException(nameof(Password), "Missing password parameter");
     }
-    public int Port 
-    {
-        get => port;
-        private init => port = value;
-    }
-    
-    
+    public int Port { get; }
+
+
     public MessagingConfig(IConfiguration config) 
     {
         Host = config.GetValue("Host");

@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
-using CodeExecutor.Common.Models.Exceptions;
 using CodeExecutor.Common.Security;
 using CodeExecutor.Dispatcher.Contracts;
 using CodeExecutor.Dispatcher.Services.Interfaces;

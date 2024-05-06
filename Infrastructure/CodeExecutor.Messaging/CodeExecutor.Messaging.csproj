@@ -8,12 +8,12 @@
 
     <ItemGroup>
       <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
-      <PackageReference Include="RabbitMQ.Client.Core.DependencyInjection" Version="5.0.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\Common\CodeExecutor.Common.Models\CodeExecutor.Common.Models.csproj" />
       <ProjectReference Include="..\..\Common\CodeExecutor.Common\CodeExecutor.Common.csproj" />
+      <ProjectReference Include="..\CodeExecutor.Messaging.Abstractions\CodeExecutor.Messaging.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

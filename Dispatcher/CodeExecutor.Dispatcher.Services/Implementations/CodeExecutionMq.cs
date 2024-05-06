@@ -1,10 +1,11 @@
 using CodeExecutor.Dispatcher.Contracts;
 using CodeExecutor.Dispatcher.Services.Interfaces;
+using CodeExecutor.Messaging.Services;
 using Microsoft.Extensions.Logging;
 
 namespace CodeExecutor.Dispatcher.Services.Implementations;
 
-public sealed class CodeExecutionMq : Messaging.BasicMessageSender, ICodeExecutionMessaging
+public sealed class CodeExecutionMq : BasicMessageSender, ICodeExecutionMessaging
 {
     private const string Exchange = "executions";
     

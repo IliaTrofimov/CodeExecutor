@@ -1,4 +1,4 @@
-namespace CodeExecutor.Messaging;
+namespace CodeExecutor.Messaging.Abstractions.Services;
 
 /// <summary>
 /// Basic interface for receiving messages from queue.

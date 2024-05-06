@@ -24,7 +24,7 @@ public sealed class ProgrammingLanguagesService : IProgrammingLanguagesService
             .Skip(skip ?? 0)
             .Take(take ?? int.MaxValue)
             .ToListAsync();
-        return mapper.Map<List<Language>>(languages);
+        return mapper.Map<List<Language>>(languages)!;
     }
 
     public async Task<List<Language>> GetVersionsListAsync(string languageName)
@@ -33,6 +33,6 @@ public sealed class ProgrammingLanguagesService : IProgrammingLanguagesService
             .Where(e => e.Name == languageName)
             .OrderByDescending(e => e.Id)
             .ToListAsync();
-        return mapper.Map<List<Language>>(languages);
+        return mapper.Map<List<Language>>(languages)!;
     }
 }

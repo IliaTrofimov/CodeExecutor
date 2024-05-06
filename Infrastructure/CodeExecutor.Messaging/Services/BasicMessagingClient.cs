@@ -1,8 +1,9 @@
 using CodeExecutor.Common.Models.Exceptions;
+using CodeExecutor.Messaging.Abstractions;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 
-namespace CodeExecutor.Messaging;
+namespace CodeExecutor.Messaging.Services;
 
 public abstract class BasicMessagingClient: IDisposable
 {
