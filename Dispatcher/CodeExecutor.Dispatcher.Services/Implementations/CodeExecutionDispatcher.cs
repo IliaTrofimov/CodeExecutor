@@ -1,8 +1,7 @@
 using AutoMapper;
-using CodeExecutor.Dispatcher.Contracts;
-using CodeExecutor.Dispatcher.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 
+using CodeExecutor.Dispatcher.Services.Interfaces;
 
 namespace CodeExecutor.Dispatcher.Services.Implementations;
 

@@ -8,6 +8,7 @@ global using global::System.Threading.Tasks;
 
 
 global using CodeExecutor.Common.Models.Exceptions;
+global using CodeExecutor.Dispatcher.Contracts;
 
 global using DbModel = CodeExecutor.DB.Abstractions.Models;
 global using DbRepository = CodeExecutor.DB.Abstractions.Repository;
