@@ -7,6 +7,7 @@ global using global::System.Threading;
 global using global::System.Threading.Tasks;
 global using Microsoft.Extensions.Logging;
 
-
+global using CodeExecutor.Dispatcher.Contracts;
 global using CodeExecutor.Common.Models.Exceptions;
+
 global using DbRepository = CodeExecutor.DB.Abstractions.Repository;

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
-using CodeExecutor.Common.Security;
-using CodeExecutor.Dispatcher.Contracts;
-using CodeExecutor.Dispatcher.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+
+using CodeExecutor.Common.Security;
+using CodeExecutor.Dispatcher.Services.Interfaces;
 
 
 namespace CodeExecutor.Dispatcher.Host.Controllers;
