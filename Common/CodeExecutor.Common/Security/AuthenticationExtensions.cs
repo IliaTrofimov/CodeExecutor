@@ -20,7 +20,7 @@ public static class AuthenticationExtensions
             return false;
         }
         
-        user = new AppUser()
+        user = new AppUser
         {
             Id = userId,
             Username = usernameClaim.Value,

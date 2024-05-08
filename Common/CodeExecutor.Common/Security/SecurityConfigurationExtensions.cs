@@ -12,7 +12,7 @@ namespace CodeExecutor.Common.Security;
 public static class SecurityConfigurationExtensions
 {
     /// <summary>Add default JWT Bearer authorization.</summary>
-    public static void AddJwtBearer(this IServiceCollection services, ConfigurationManager config)
+    public static void AddJwtBearer(this IServiceCollection services, IConfiguration config)
     {
         var issuer = config.GetValue("Authorization:Issuer");
         var audience = config.GetValue("Authorization:Audience");
@@ -43,7 +43,7 @@ public static class SecurityConfigurationExtensions
     }
     
     /// <summary>Configure CORS.</summary>
-    public static void UseDefaultCors(this IApplicationBuilder app, ConfigurationManager config)
+    public static void UseDefaultCors(this IApplicationBuilder app, IConfiguration config)
     {
         app.UseCors(opt =>
         {
@@ -66,7 +66,7 @@ public static class SecurityConfigurationExtensions
         });
     }
 
-    public static void AddAuthConfiguration(this IServiceCollection services, ConfigurationManager config)
+    public static void AddAuthConfiguration(this IServiceCollection services, IConfiguration config)
     {
         var section = config.GetSection("Authorization");
         if (!section.Exists())
