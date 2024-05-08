@@ -2,6 +2,7 @@
 
 namespace CodeExecutor.Auth.Contracts;
 
+
 /// <summary>
 /// Login request body.
 /// </summary>

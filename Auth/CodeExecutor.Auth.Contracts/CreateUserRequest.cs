@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CodeExecutor.Auth.Contracts;
 
+
 /// <summary>
 /// User creation request.
 /// </summary>
