@@ -120,7 +120,7 @@ public class CodeExecutionRepository : DefaultEfRepository<CodeExecution>,
 
     public async Task Delete(Guid guid, CancellationToken cancellationToken = default)
     {
-        var execution = await dbSet.FindAsync(guid);
+        var execution = await dbSet.FindAsync(guid, cancellationToken);
         if (execution is not null) 
             dbSet.Remove(execution);
     }

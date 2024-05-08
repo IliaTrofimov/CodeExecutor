@@ -7,7 +7,7 @@ namespace CodeExecutor.DB;
 
 public static class ServicesConfiguration
 {
-    public static void AddDataBase(this IServiceCollection services, IConfigurationManager config, string path = "Database:PostgreSql")
+    public static void AddDataBase(this IServiceCollection services, IConfiguration config, string path = "Database:PostgreSql")
     {
         var connection = config[path] 
                          ?? throw new ConfigurationException($"Missing '{path}' parameter at app settings.");
