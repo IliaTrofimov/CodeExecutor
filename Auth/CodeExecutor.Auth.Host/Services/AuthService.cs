@@ -137,14 +137,11 @@ public sealed class AuthService : IAuthService, IDisposable
         return sha512.ComputeHash(bytes);
     }
 
-    private bool CompareHashes(byte[] expected, byte[] actual)
+    private static bool CompareHashes(byte[] expected, byte[] actual)
     {
         if (expected.Length != actual.Length)
             return false;
-        for (var i = 0; i < expected.Length; i++)
-            if (actual[i] != expected[i])
-                return false;
-        return true;
+        return !expected.Where((t, i) => actual[i] != t).Any();
     }
     
 

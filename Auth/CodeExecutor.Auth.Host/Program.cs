@@ -1,32 +1,29 @@
-using System.Reflection;
+using Microsoft.OpenApi.Models;
+
+using CodeExecutor.DB;
 using CodeExecutor.Auth.Host;
 using CodeExecutor.Common.Logging;
 using CodeExecutor.Common.Middleware;
 using CodeExecutor.Common.Security;
-using CodeExecutor.DB;
-using Microsoft.OpenApi.Models;
 
 
-var project = Assembly.GetCallingAssembly().GetName().Name!;
 var builder = WebApplication.CreateBuilder(args);
-var config = builder.Configuration;
-
+builder.Configuration.AddCommandLine(args).AddEnvironmentVariables();
 builder.Logging.ClearProviders();
-builder.Services.AddConsoleLogger();
 
 builder.Services.AddControllers(opt => opt.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 builder.Services.AddRouting(opt => opt.LowercaseUrls = true);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddJwtBearer(config);
-
-builder.Services.AddDataBase(config);
-builder.Services.AddConfigs(config);
-builder.Services.AddServices(config);
-
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = project!.Replace(".Host", ""), Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = builder.Environment.ApplicationName, Version = "v1" });
 });
+
+builder.Services.AddConsoleLogger();
+builder.Services.AddJwtBearer(builder.Configuration);
+builder.Services.AddDataBase(builder.Configuration);
+builder.Services.AddConfigs(builder.Configuration);
+builder.Services.AddServices(builder.Configuration);
 
 
 var app = builder.Build();
@@ -41,9 +38,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<DefaultExceptionHandler>();
 app.UseMiddleware<DefaultHttpLogger>();
-//app.UseHttpsRedirection();
 app.UseRouting();
-app.UseDefaultCors(config);
+app.UseDefaultCors(builder.Configuration);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
