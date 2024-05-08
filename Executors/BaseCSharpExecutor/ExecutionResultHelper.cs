@@ -4,7 +4,7 @@ namespace BaseCSharpExecutor;
 
 public class ExecutionResultHelper
 {
-    public Guid Guid { get; private set; }
+    public Guid Guid { get; }
 
     public ExecutionResultHelper(Guid guid)
     {
@@ -15,9 +15,9 @@ public class ExecutionResultHelper
     {
         Guid = Guid,
         IsError = true,
-        Comment = comment,
         Data = data,
-        Status = CodeExecutionStatus.Error
+        Status = CodeExecutionStatus.Error,
+        Comment = comment
     };
     
     public CodeExecutionResult GetError(int errorsCount, string? data = null) => new CodeExecutionResult
@@ -33,9 +33,9 @@ public class ExecutionResultHelper
     {
         Guid = Guid,
         IsError = false,
-        Comment = "Execution finished successfully",
         Data = data,
-        Status = CodeExecutionStatus.Finished
+        Status = CodeExecutionStatus.Finished,
+        Comment = "Execution finished successfully"
     };
     
     public CodeExecutionResult GetStarted() => new CodeExecutionResult

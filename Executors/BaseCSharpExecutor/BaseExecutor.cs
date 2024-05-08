@@ -1,11 +1,16 @@
 using System.Text;
+using Microsoft.Extensions.Logging;
+
 using BaseCSharpExecutor.Api;
 using CodeExecutor.Dispatcher.Contracts;
-using Microsoft.Extensions.Logging;
 
 
 namespace BaseCSharpExecutor;
 
+
+/// <summary>
+/// Base code executor class.
+/// </summary>
 public abstract class BaseExecutor
 {
     private readonly ICodeExecutionDispatcherClient dispatcherClient;
@@ -21,6 +26,7 @@ public abstract class BaseExecutor
     protected abstract void RunScriptInternal(string sourceCode, Func<Exception, bool> exceptionHandler);
 
 
+    /// <summary>Start code execution.</summary>
     public Task StartExecution(ExecutionStartMessage startMessage)
     {
         var resultTasks = Process(startMessage)
@@ -87,7 +93,7 @@ public abstract class BaseExecutor
         }
     }
     
-    protected (StringWriter scriptOutput, StreamWriter standardOutput) CreateScriptWriter()
+    protected static (StringWriter scriptOutput, StreamWriter standardOutput) CreateScriptWriter()
     {
         var scriptOutput = new StringWriter();
         var standardOutput = new StreamWriter(Console.OpenStandardOutput());

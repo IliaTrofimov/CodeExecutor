@@ -1,8 +1,9 @@
-using CodeExecutor.Dispatcher.Contracts;
-using CodeExecutor.Messaging;
-using CodeExecutor.Messaging.Abstractions.Services;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
+using CodeExecutor.Dispatcher.Contracts;
+using CodeExecutor.Messaging.Abstractions.Services;
+
 
 namespace BaseCSharpExecutor;
 
@@ -20,6 +21,7 @@ public class ExecutionWorker : BackgroundService
     
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
+        logger.LogInformation("Start worker service");
         messageReceiver.StartReceive();
         return Task.CompletedTask;
     }

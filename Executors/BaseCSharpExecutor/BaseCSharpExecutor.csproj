@@ -15,7 +15,5 @@
       <ProjectReference Include="..\..\Dispatcher\CodeExecutor.Dispatcher.Contracts\CodeExecutor.Dispatcher.Contracts.csproj" />
       <ProjectReference Include="..\..\Infrastructure\CodeExecutor.Messaging\CodeExecutor.Messaging.csproj" />
     </ItemGroup>
-
-
-
+    
 </Project>

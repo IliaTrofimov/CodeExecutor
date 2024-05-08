@@ -1,8 +1,9 @@
-using System.ComponentModel;
-using CodeExecutor.Dispatcher.Contracts;
-using CodeExecutor.Messaging;
-using CodeExecutor.Messaging.Services;
 using Microsoft.Extensions.Logging;
+
+using CodeExecutor.Messaging.Services;
+using CodeExecutor.Dispatcher.Contracts;
+using CodeExecutor.Messaging.Abstractions;
+
 
 namespace BaseCSharpExecutor;
 
@@ -14,7 +15,7 @@ public class ExecutionMessageReceiver : BasicMessageReceiver<ExecutionStartMessa
 {
     private readonly BaseExecutor executor;
 
-    public ExecutionMessageReceiver(BaseExecutor executor, MessageReceiverConfig config, ILogger<BasicMessageSender> logger)
+    public ExecutionMessageReceiver(BaseExecutor executor, IMessageReceiverConfig config, ILogger<BasicMessageSender> logger)
         : base(config, logger)
     {
         this.executor = executor;
