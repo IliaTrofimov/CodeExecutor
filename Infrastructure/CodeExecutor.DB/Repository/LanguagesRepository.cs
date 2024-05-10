@@ -13,6 +13,9 @@ public sealed class LanguagesRepository : DefaultEfRepository<Language>, ILangua
     public async Task<List<Language>>
         ListVersionsAsync(string languageName, CancellationToken cancellationToken = default)
     {
-        return await Query().Where(l => l.Name == languageName).ToListAsync(cancellationToken);
+        return await Query()
+            .Where(l => l.Name == languageName)
+            .OrderBy(l => l.Version)
+            .ToListAsync(cancellationToken);
     }
 }

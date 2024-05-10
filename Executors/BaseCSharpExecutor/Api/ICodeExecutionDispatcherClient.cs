@@ -8,4 +8,6 @@ public interface ICodeExecutionDispatcherClient
 {
     public Task SetResultAsync(CodeExecutionResult codeExecutionResult, string validationTag,
                                CancellationToken cancellationToken = default);
+
+    public Task<bool> TryPingAsync(CancellationToken cancellationToken = default);
 }

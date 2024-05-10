@@ -16,7 +16,6 @@ public abstract class BasicMessageReceiver<TMessage> : BasicMessagingClient, IMe
     protected readonly string queue;
     protected readonly string exchange;
 
-
     protected BasicMessageReceiver(IMessageReceiverConfig config, ILogger<BasicMessageSender> logger)
         : base(config, logger)
     {
@@ -24,6 +23,9 @@ public abstract class BasicMessageReceiver<TMessage> : BasicMessagingClient, IMe
         exchange = config.Exchange;
         rabbitConsumer = new EventingBasicConsumer(rabbitChannel);
         rabbitConsumer.Received += HandleRaw;
+        
+        logger.LogDebug("RabbitMQ config: Host: {host}:{port}; Queue: {queue}; exchange: {exchange}",
+            config.Host, config.Port, queue, exchange);
     }
 
     public abstract void HandleMessage(TMessage message);

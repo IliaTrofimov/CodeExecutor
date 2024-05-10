@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 
 
-namespace CSharp12Executor;
+namespace CSharpCodeExecutor;
 
 public class CSharpExecutor : BaseExecutor
 {
