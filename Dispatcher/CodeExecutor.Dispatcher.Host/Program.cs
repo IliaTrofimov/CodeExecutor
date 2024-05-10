@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+﻿using CodeExecutor.Common.Health;
 using CodeExecutor.Common.Logging;
 using CodeExecutor.Common.Middleware;
 using CodeExecutor.Common.Security;
@@ -7,32 +7,28 @@ using CodeExecutor.Dispatcher.Host;
 using Microsoft.OpenApi.Models;
 
 
-var project = Assembly.GetCallingAssembly().GetName().Name!;
 var builder = WebApplication.CreateBuilder(args);
-var config = builder.Configuration;
-
-builder.Services.AddConfigs(config);
-
+builder.Configuration.AddCommandLine(args).AddEnvironmentVariables();
 builder.Logging.ClearProviders();
-builder.Services.AddConsoleLogger();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = project.Replace(".Host", ""), Version = "v1" });
-});
 
 builder.Services.AddControllers(opt => opt.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 builder.Services.AddRouting(opt => opt.LowercaseUrls = true);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddJwtBearer(config);
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = builder.Environment.ApplicationName, Version = "v1" });
+});
 
-builder.Services.AddDataBase(config);
-builder.Services.AddServices(config);
-
+builder.Services.AddConsoleLogger();
+builder.Services.AddJwtBearer(builder.Configuration);
+builder.Services.AddDataBase(builder.Configuration);
+builder.Services.AddConfigs(builder.Configuration);
+builder.Services.AddServices(builder.Configuration);
 
 var app = builder.Build();
 
 app.MapHealthChecks("/health");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -41,11 +37,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<DefaultExceptionHandler>();
 app.UseMiddleware<DefaultHttpLogger>();
-//app.UseHttpsRedirection();
 app.UseRouting();
-app.UseDefaultCors(config);
+app.UseDefaultCors(builder.Configuration);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.AddPingHealthCheck();
+
 
 app.Run();

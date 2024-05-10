@@ -1,4 +1,5 @@
 using CodeExecutor.Auth.Host;
+using CodeExecutor.Common.Health;
 using CodeExecutor.Common.Logging;
 using CodeExecutor.Common.Middleware;
 using CodeExecutor.Common.Security;
@@ -28,12 +29,12 @@ builder.Services.AddServices(builder.Configuration);
 var app = builder.Build();
 
 app.MapHealthChecks("/health");
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 
 app.UseMiddleware<DefaultExceptionHandler>();
 app.UseMiddleware<DefaultHttpLogger>();
@@ -42,5 +43,6 @@ app.UseDefaultCors(builder.Configuration);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.AddPingHealthCheck();
 
 app.Run();

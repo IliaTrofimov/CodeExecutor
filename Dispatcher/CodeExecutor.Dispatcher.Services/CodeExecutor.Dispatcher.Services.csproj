@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Common\CodeExecutor.Common\CodeExecutor.Common.csproj" />
       <ProjectReference Include="..\..\Infrastructure\CodeExecutor.DB.Abstractions\CodeExecutor.DB.Abstractions.csproj" />
       <ProjectReference Include="..\..\Infrastructure\CodeExecutor.DB\CodeExecutor.DB.csproj" />
       <ProjectReference Include="..\..\Infrastructure\CodeExecutor.Messaging\CodeExecutor.Messaging.csproj" />
@@ -15,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="AutoMapper" Version="13.0.0" />
+      <PackageReference Include="AutoMapper" Version="13.0.1" />
     </ItemGroup>
 
 </Project>

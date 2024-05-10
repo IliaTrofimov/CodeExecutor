@@ -9,10 +9,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="13.0.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0"/>
-        <PackageReference Include="xunit" Version="2.4.2"/>
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+        <PackageReference Include="AutoMapper" Version="13.0.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+        <PackageReference Include="xunit" Version="2.8.0" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.8.0">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
@@ -22,7 +22,7 @@
       <ProjectReference Include="..\Auth\CodeExecutor.Auth.Host\CodeExecutor.Auth.Host.csproj" />
       <ProjectReference Include="..\Dispatcher\CodeExecutor.Dispatcher.Services\CodeExecutor.Dispatcher.Services.csproj" />
       <ProjectReference Include="..\Executors\BaseCSharpExecutor\BaseCSharpExecutor.csproj" />
-      <ProjectReference Include="..\Executors\CSharp12Executor\CSharp12Executor.csproj" />
+      <ProjectReference Include="..\Executors\CSharpCodeExecutor\CSharpCodeExecutor.csproj" />
       <ProjectReference Include="..\Infrastructure\CodeExecutor.Messaging.Abstractions\CodeExecutor.Messaging.Abstractions.csproj" />
     </ItemGroup>
 

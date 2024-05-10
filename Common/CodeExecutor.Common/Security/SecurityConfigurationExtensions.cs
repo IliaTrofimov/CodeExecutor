@@ -73,6 +73,6 @@ public static class SecurityConfigurationExtensions
         if (!section.Exists())
             throw new ConfigurationException("Missing Authorization section");
 
-        services.AddSingleton(new AuthConfig(section));
+        services.AddSingleton<IAuthConfig>(new AuthConfig(section));
     }
 }

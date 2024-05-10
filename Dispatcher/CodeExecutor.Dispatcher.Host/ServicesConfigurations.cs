@@ -1,3 +1,4 @@
+using CodeExecutor.Common.Health;
 using CodeExecutor.Common.Security;
 using CodeExecutor.DB;
 using CodeExecutor.DB.Repository;
@@ -11,7 +12,7 @@ namespace CodeExecutor.Dispatcher.Host;
 
 public static class ServicesConfigurations
 {
-    public static void AddServices(this IServiceCollection services, ConfigurationManager config)
+    public static void AddServices(this IServiceCollection services, IConfiguration config)
     {
         services.AddScoped<DbRepository.ICodeExecutionsExplorerRepository, CodeExecutionRepository>();
         services.AddScoped<DbRepository.ICodeExecutionsEditorRepository, CodeExecutionRepository>();
@@ -23,11 +24,14 @@ public static class ServicesConfigurations
         services.AddScoped<ICodeExecutionMessaging, CodeExecutionMq>();
         services.AddScoped<ICodeExecutionExplorer, CodeExecutionExplorer>();
 
-        services.AddHealthChecks().AddCheck<HealthCheckService>("DefaultHealthCheck");
+        services.AddHealthChecks()
+            .AddCheck<HealthCheckService>("DefaultHealthCheck")
+            .AddCheck<PingCheckService>("Ping");
+        
         services.AddAutoMapper(o => o.AddProfile<AutoMapperProfile>());
     }
 
-    public static void AddConfigs(this IServiceCollection services, ConfigurationManager config)
+    public static void AddConfigs(this IServiceCollection services, IConfiguration config)
     {
         services.AddAuthConfiguration(config);
         services.AddSingleton(new DbConfig(config.GetSection("Database")));

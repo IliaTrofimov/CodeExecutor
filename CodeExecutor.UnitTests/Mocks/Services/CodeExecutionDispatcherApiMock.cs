@@ -36,6 +36,8 @@ public class CodeExecutionDispatcherApiMock : ICodeExecutionDispatcherClient
         return Task.CompletedTask;
     }
 
+    public Task<bool> TryPingAsync(CancellationToken cancellationToken = default) => Task.FromResult(true);
+
 
     private void AssertNotError(CodeExecutionResult result)
     {

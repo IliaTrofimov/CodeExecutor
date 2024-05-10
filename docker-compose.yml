@@ -4,6 +4,7 @@
 
   code.executor.auth:
     image: codeexecutor.auth.host
+    hostname: code.executor.auth
     depends_on:
       - postgres
     ports:
@@ -11,42 +12,64 @@
       - 5021:443/tcp
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:80 
-      - Database_PostgreSql="Host=host.docker.internal;Port=5432;Database=postgres;Username=postgres;Password=1"
+      - ASPNETCORE_HTTP_PORTS=80
+      - Database__PostgreSql="Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=1"
     build:
       context: .
       dockerfile: Auth/CodeExecutor.Auth.Host/Dockerfile
+    volumes:
+      - auth:/var/lib/code.executor.auth/data
+    networks:
+      - backend
   
   code.executor.dispatcher:
     image: codeexecutor.dispatcher.host
+    hostname: code.executor.dispatcher
     depends_on:
       - postgres
-      - rabbitmq
+      - rabbitmqx
     ports:
-      - 5030:80/tcp
-      - 5031:443/tcp
+      - "127.0.0.1:8080:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://+:80
-      - Database_PostgreSql="Host=host.docker.internal;Port=5432;Database=postgres;Username=postgres;Password=1"
-
-      #- ASPNETCORE_HTTPS_PORT=5031
+      - ASPNETCORE_HTTP_PORTS=80
+      - Database__PostgreSql="Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=1"
+      - RabbitMq__Host=rabbitmq
+      - RabbitMq__Port=5672
+      - RabbitMq__Username=rmuser
+      - RabbitMq__Password=rmpassword
     build:
       context: .
       dockerfile: Dispatcher/CodeExecutor.Dispatcher.Host/Dockerfile
+    volumes:
+      - dispatcher:/var/lib/code.executor.dispatcher/data
+    networks:
+      - backend
   
-  csharp12.executor:
-    image: csharp12executor
+  csharp.executor:
+    image: csharpexecutor
     depends_on:
       - rabbitmq
+    environment:
+      - Api__DispatcherUrl=http://code.executor.dispatcher:5030
+      - RabbitMq__Host=rabbitmq
+      - RabbitMq__Port=5672
+      - RabbitMq__Username=rmuser
+      - RabbitMq__Password=rmpassword
+      - HealthCheck__TestApi=true
     build:
       context: .
-      dockerfile: Executors/CSharp12Executor/Dockerfile
+      dockerfile: Executors/CSharpCodeExecutor/Dockerfile
+    volumes:
+      - executors:/var/lib/csharp12.executor/data
+    networks:
+      - backend
   
   # Infrastructure =============================================== 
   
   postgres:
     image: postgres
+    hostname: postgres
     restart: always
     ports:
       - 5432:5432
@@ -56,9 +79,13 @@
       POSTGRES_DB: postgres
     volumes:
       - postgres:/var/lib/postgresql/data
+    networks:
+      - backend
 
   pgadmin:
     image: dpage/pgadmin4
+    depends_on:
+      - postgres
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
       PGADMIN_DEFAULT_PASSWORD: 1
@@ -67,8 +94,8 @@
       - 5050:80
     volumes:
       - pgadmin:/var/lib/pgadmin
-    depends_on:
-      - postgres
+    networks:
+      - backend
 
   rabbitmq:
     image: rabbitmq:3.10.7-management
@@ -79,11 +106,21 @@
       - RABBITMQ_DEFAULT_PASS=rmpassword
       - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbit log_levels [{connection,error},{default,error}] disk_free_limit 2147483648
     volumes:
-      - ./Docker/rabbitmq:/var/lib/rabbitmq
+      - rabbitmq:/var/lib/rabbitmq
     ports:
       - 15672:15672
       - 5672:5672
+    networks:
+      - backend
 
 volumes:
   postgres:
   pgadmin:
+  rabbitmq:
+  dispatcher:
+  auth:
+  executors:
+    
+
+networks:
+  backend:

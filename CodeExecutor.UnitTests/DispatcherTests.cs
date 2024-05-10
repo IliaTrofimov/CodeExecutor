@@ -30,7 +30,9 @@ public class DispatcherTests : TestBase
     }
 
     [Fact]
-    public async Task<Guid> StartExecutionDefault()
+    public Task StartExecutionDefault() => StartExecutionInternal();
+
+    private async Task<Guid> StartExecutionInternal()
     {
         var request = new CodeExecutionRequest
         {
@@ -45,7 +47,7 @@ public class DispatcherTests : TestBase
 
         var db = await ExecutionsExplorerRepository.GetAsync(response.Guid);
         Assert.NotNull(db);
-        Assert.Equal(false, db.IsError);
+        Assert.False(db.IsError);
         Assert.NotEqual(new DateTimeOffset(), db.RequestedAt);
         Assert.Equal(db.RequestedAt, db.UpdatedAt);
         Assert.Equal(request.LanguageId, db.LanguageId);
@@ -80,7 +82,7 @@ public class DispatcherTests : TestBase
     {
         if (exists)
         {
-            var guid = await StartExecutionDefault();
+            var guid = await StartExecutionInternal();
             var db = await ExecutionsExplorerRepository.GetAsync(guid);
             Assert.NotNull(db?.Result);
             db.Result.Data = "data\ndata";
@@ -106,7 +108,7 @@ public class DispatcherTests : TestBase
     [Fact]
     public async Task GetExecutionResultsWrongUser()
     {
-        var guid = await StartExecutionDefault();
+        var guid = await StartExecutionInternal();
         var ex = await Assert.ThrowsAsync<UnauthorizedException>(async () =>
             await ExecutionExplorer.GetExecutionResultAsync(guid, userId + 1));
 
@@ -122,7 +124,7 @@ public class DispatcherTests : TestBase
     {
         if (exists)
         {
-            var guid = await StartExecutionDefault();
+            var guid = await StartExecutionInternal();
             var db = await ExecutionsExplorerRepository.GetAsync(guid);
             Assert.NotNull(db?.SourceCode);
 
@@ -143,7 +145,7 @@ public class DispatcherTests : TestBase
     [Fact]
     public async Task GetExecutionSourcesWrongUser()
     {
-        var guid = await StartExecutionDefault();
+        var guid = await StartExecutionInternal();
         var ex = await Assert.ThrowsAsync<UnauthorizedException>(async () =>
             await ExecutionExplorer.GetSourceCodeAsync(guid, userId + 1));
 
@@ -161,7 +163,7 @@ public class DispatcherTests : TestBase
     [InlineData(true, "new data", "new comment")]
     public async Task SetExecutionResults(bool? isError, string? data, string? comment)
     {
-        var guid = await StartExecutionDefault();
+        var guid = await StartExecutionInternal();
         var db = await ExecutionsExplorerRepository.GetAsync(guid);
         Assert.NotNull(db);
 
@@ -201,7 +203,7 @@ public class DispatcherTests : TestBase
     public async Task SetExecutionResultsCheckStatus(bool? isError, CodeExecutionStatus? status,
                                                      CodeExecutionStatus? prevStatus = null)
     {
-        var guid = await StartExecutionDefault();
+        var guid = await StartExecutionInternal();
         var db = await ExecutionsExplorerRepository.GetAsync(guid);
         Assert.NotNull(db);
 
@@ -243,7 +245,7 @@ public class DispatcherTests : TestBase
     [Fact]
     public async Task SetExecutionResultsEmpty()
     {
-        var guid = await StartExecutionDefault();
+        var guid = await StartExecutionInternal();
         var db = await ExecutionsExplorerRepository.GetAsync(guid);
         Assert.NotNull(db);
 
@@ -269,7 +271,7 @@ public class DispatcherTests : TestBase
     [Fact]
     public async Task SetExecutionResultsWrongValidationTag()
     {
-        var guid = await StartExecutionDefault();
+        var guid = await StartExecutionInternal();
         var db = await ExecutionsExplorerRepository.GetAsync(guid);
         Assert.NotNull(db);
 
