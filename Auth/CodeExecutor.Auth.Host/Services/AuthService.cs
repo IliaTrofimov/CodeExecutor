@@ -56,7 +56,7 @@ public sealed class AuthService : IAuthService, IDisposable
             .FirstOrDefaultAsync(u => u.Username == request.Username);
 
         var hash = GetPasswordHash(request.Password);
-        User? user = await getUser;
+        var user = await getUser;
 
         if (user is null || !CompareHashes(user.PasswordHash, hash))
             throw new UnauthorizedException("Wrong password or username");
@@ -65,7 +65,7 @@ public sealed class AuthService : IAuthService, IDisposable
         {
             Username = request.Username,
             UserId = user.Id,
-            Token = GetToken(user, out DateTimeOffset expires),
+            Token = GetToken(user, out var expires),
             ExpireDate = expires
         };
     }
@@ -79,7 +79,7 @@ public sealed class AuthService : IAuthService, IDisposable
             throw new ApiException("Password is required", HttpStatusCode.BadRequest);
 
         var hash = GetPasswordHash(request.Password);
-        User user = await usersRepository.Create(new User
+        var user = await usersRepository.Create(new User
         {
             PasswordHash = hash,
             Username = request.Username,
@@ -92,14 +92,14 @@ public sealed class AuthService : IAuthService, IDisposable
         {
             Username = request.Username,
             UserId = user.Id,
-            Token = GetToken(user, out DateTimeOffset expires),
+            Token = GetToken(user, out var expires),
             ExpireDate = expires
         };
     }
 
     public async Task<UserInfo?> GetUserAsync(long userId)
     {
-        User? user = await usersRepository.GetAsync(userId);
+        var user = await usersRepository.GetAsync(userId);
         if (user is null)
             return null;
 

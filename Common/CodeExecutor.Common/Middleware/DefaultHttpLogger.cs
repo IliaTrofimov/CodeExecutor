@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
+
 namespace CodeExecutor.Common.Middleware;
 
 /// <summary>Logging middleware.</summary>
@@ -10,15 +11,13 @@ public class DefaultHttpLogger
 {
     private readonly RequestDelegate next;
 
-    public DefaultHttpLogger(RequestDelegate next)
-    {
-        this.next = next;
-    }
+    public DefaultHttpLogger(RequestDelegate next) { this.next = next; }
 
-    public async Task Invoke(HttpContext httpContext, ILogger<DefaultHttpLogger> logger, IWebHostEnvironment environment)
+    public async Task Invoke(HttpContext httpContext, ILogger<DefaultHttpLogger> logger,
+                             IWebHostEnvironment environment)
     {
         var requestLifeTime = await CallNext(httpContext);
-        
+
         logger.Log(
             LogLevel.Information,
             "[{status}] {method} {url}{query}; Elapsed: {elapsed:F2} ms; Env: {env}",

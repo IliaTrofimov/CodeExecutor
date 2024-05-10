@@ -1,5 +1,6 @@
 using CodeExecutor.DB.Abstractions.Models;
 
+
 namespace CodeExecutor.DB.Abstractions.Repository;
 
 public interface ILanguagesRepository : IReadonlyRepository<Language>

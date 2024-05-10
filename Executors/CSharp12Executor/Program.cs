@@ -3,6 +3,7 @@ using BaseCSharpExecutor.Api;
 using CodeExecutor.Dispatcher.Contracts;
 using CodeExecutor.Messaging;
 using CodeExecutor.Messaging.Abstractions.Services;
+using CSharp12Executor;
 
 
 var builder = Host.CreateApplicationBuilder(args);
@@ -15,7 +16,7 @@ builder.Services.AddSingleton(new DispatcherApiConfig(config.GetSection("Api")))
 
 builder.Services.AddSingleton<IMessageReceiver<ExecutionStartMessage>, ExecutionMessageReceiver>();
 builder.Services.AddSingleton<ICodeExecutionDispatcherClient, CodeExecutionDispatcherClient>();
-builder.Services.AddSingleton<BaseExecutor, CSharp12Executor.CSharpExecutor>();
+builder.Services.AddSingleton<BaseExecutor, CSharpExecutor>();
 builder.Services.AddHttpClient();
 
 builder.Services.AddHostedService<ExecutionWorker>();

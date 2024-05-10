@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
 namespace CodeExecutor.DB.Abstractions.Models;
 
 /// <summary>Database entity with Id column.</summary>

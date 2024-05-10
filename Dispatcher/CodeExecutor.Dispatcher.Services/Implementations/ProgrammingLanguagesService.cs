@@ -18,20 +18,22 @@ public sealed class ProgrammingLanguagesService : IProgrammingLanguagesService
 
     public async Task<List<Language>> GetListAsync(int? skip = null, int? take = null)
     {
-        var languages = await context.Query()
+        List<DbModel.Language> languages = await context.Query()
             .OrderByDescending(e => e.Id)
             .Skip(skip ?? 0)
             .Take(take ?? int.MaxValue)
             .ToListAsync();
+
         return mapper.Map<List<Language>>(languages)!;
     }
 
     public async Task<List<Language>> GetVersionsListAsync(string languageName)
     {
-        var languages = await context.Query()
+        List<DbModel.Language> languages = await context.Query()
             .Where(e => e.Name == languageName)
             .OrderByDescending(e => e.Id)
             .ToListAsync();
+
         return mapper.Map<List<Language>>(languages)!;
     }
 }

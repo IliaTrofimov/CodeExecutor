@@ -1,11 +1,10 @@
-using CodeExecutor.Common.Security;
 using CodeExecutor.Auth.Host.Services;
-using CodeExecutor.DB.Repository;
+using CodeExecutor.Common.Security;
 using CodeExecutor.DB.Abstractions.Repository;
+using CodeExecutor.DB.Repository;
 
 
 namespace CodeExecutor.Auth.Host;
-
 
 public static class ServicesConfigurations
 {

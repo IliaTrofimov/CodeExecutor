@@ -9,10 +9,10 @@ public sealed class CodeExecutionExplorer : ICodeExecutionExplorer
 {
     private readonly DbRepository.ICodeExecutionsExplorerRepository viewRepository;
     private readonly IMapper mapper;
-    
+
 
     public CodeExecutionExplorer(DbRepository.ICodeExecutionsExplorerRepository viewRepository,
-        IMapper mapper)
+                                 IMapper mapper)
     {
         this.viewRepository = viewRepository;
         this.mapper = mapper;
@@ -24,6 +24,7 @@ public sealed class CodeExecutionExplorer : ICodeExecutionExplorer
         var execution = await viewRepository.GetResultAsync(executionGuid);
         if (execution is null)
             return null;
+
         if (execution.InitiatorId != userId)
             throw new UnauthorizedException("Cannot view this execution.");
 
@@ -35,25 +36,27 @@ public sealed class CodeExecutionExplorer : ICodeExecutionExplorer
         var execution = await viewRepository.GetSourceCodeAsync(executionGuid);
         if (execution is null)
             return null;
+
         if (execution.InitiatorId != userId)
             throw new UnauthorizedException("Cannot view this execution.");
-        
+
         return mapper.Map<SourceCode>(execution);
     }
 
-    public async Task<List<CodeExecution>> GetExecutionsListAsync(long userId, int? skip = null, int? take = null, IEnumerable<Guid>? guids = null)
+    public async Task<List<CodeExecution>> GetExecutionsListAsync(long userId, int? skip = null, int? take = null,
+                                                                  IEnumerable<Guid>? guids = null)
     {
-        var query = viewRepository.Query().Where(e => e.InitiatorId == userId);
-        
+        IQueryable<DbModel.CodeExecution> query = viewRepository.Query().Where(e => e.InitiatorId == userId);
+
         if (guids is not null)
             query = query.Where(e => guids.Contains(e.Id));
-        
+
         query = query.OrderByDescending(e => e.RequestedAt)
             .ThenByDescending(e => e.UpdatedAt)
             .Skip(skip ?? 0)
             .Take(take ?? int.MaxValue);
 
-        var executions = await query.ToListAsync();
+        List<DbModel.CodeExecution> executions = await query.ToListAsync();
         return mapper.Map<List<CodeExecution>>(executions)!;
     }
 }

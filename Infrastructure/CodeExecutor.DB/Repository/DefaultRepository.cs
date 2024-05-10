@@ -1,11 +1,10 @@
-using Microsoft.EntityFrameworkCore;
 using CodeExecutor.DB.Abstractions.Repository;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace CodeExecutor.DB.Repository;
 
-/// <summary>
-/// Default Entity Framework repository.
-/// </summary>
+/// <summary>Default Entity Framework repository.</summary>
 public abstract class DefaultEfRepository<TItem> : IReadonlyRepository<TItem>
     where TItem : class
 {
@@ -15,16 +14,16 @@ public abstract class DefaultEfRepository<TItem> : IReadonlyRepository<TItem>
     protected DefaultEfRepository(DbContext context)
     {
         this.context = context;
-        this.dbSet = this.context.Set<TItem>();
+        dbSet = this.context.Set<TItem>();
     }
-    
+
     protected DefaultEfRepository(DbContext context, DbSet<TItem> dbSet)
     {
         this.context = context;
         this.dbSet = dbSet;
     }
-    
-    
+
+
     public async Task<int> SaveAsync()
     {
         var count = await context.SaveChangesAsync();
@@ -38,7 +37,7 @@ public abstract class DefaultEfRepository<TItem> : IReadonlyRepository<TItem>
 
         if (cancellationToken.IsCancellationRequested)
             return null;
-        
+
         var item = await dbSet.FindAsync(key, cancellationToken);
         return item;
     }
@@ -47,22 +46,19 @@ public abstract class DefaultEfRepository<TItem> : IReadonlyRepository<TItem>
     {
         if (cancellationToken.IsCancellationRequested)
             return new List<TItem>(0);
-        
-        var items = await dbSet.ToListAsync(cancellationToken);
+
+        List<TItem> items = await dbSet.ToListAsync(cancellationToken);
         return items;
     }
-    
+
     public virtual async Task<int> CountAsync(CancellationToken cancellationToken = default)
     {
         if (cancellationToken.IsCancellationRequested)
             return 0;
-        
+
         var count = await dbSet.CountAsync(cancellationToken);
         return count;
     }
 
-    public virtual IQueryable<TItem> Query()
-    {
-        return dbSet.AsQueryable();
-    }
+    public virtual IQueryable<TItem> Query() => dbSet.AsQueryable();
 }

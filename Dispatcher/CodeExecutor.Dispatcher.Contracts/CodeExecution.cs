@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
 namespace CodeExecutor.Dispatcher.Contracts;
 
-/// <summary>
-/// Short info about code execution.
-/// </summary>
+/// <summary>Short info about code execution.</summary>
 public class CodeExecution
 {
     /// <summary>Guid of code execution process.</summary>
@@ -18,13 +17,13 @@ public class CodeExecution
     /// <summary>Request time.</summary>
     [Required]
     public DateTimeOffset RequestedAt { get; set; }
-    
+
     /// <summary>Execution start time.</summary>
     public DateTimeOffset? StartedAt { get; set; }
 
     /// <summary>Execution finish time.</summary>
     public DateTimeOffset? FinishedAt { get; set; }
-    
+
     /// <summary>Execution update time.</summary>
     public DateTimeOffset? UpdatedAt { get; set; }
 

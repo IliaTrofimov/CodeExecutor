@@ -30,7 +30,7 @@ public static class ServicesConfigurations
     {
         var tracingConfig = config.GetSection("Tracing");
         if (!tracingConfig.Exists()) return;
-        
+
         var host = tracingConfig.GetValue("Host");
         var port = tracingConfig.GetIntValue("Port");
         //var useHttpClient = !bool.TryParse(tracingConfig.GetValue("HttpInstrumentation"), out var parsed) || ;
@@ -43,9 +43,11 @@ public static class ServicesConfigurations
             builder.AddOtlpExporter(options =>
                 options.Endpoint = new Uri($"{host}:{port}")
             );
+
             builder.SetResourceBuilder(ResourceBuilder.CreateDefault()
                 .AddService(serviceName, serviceVersion: "1.0.0")
             );
+
             builder.AddHttpClientInstrumentation(options =>
                 options.RecordException = true
             );
@@ -56,19 +58,21 @@ public static class ServicesConfigurations
     {
         var metricsConfig = config.GetSection("Metrics");
         if (!metricsConfig.Exists()) return;
-        
+
         var host = metricsConfig.GetValue("Host");
         var port = metricsConfig.GetIntValue("Port");
-        
+
         services.AddOpenTelemetry().WithMetrics(builder =>
         {
             builder.AddAspNetCoreInstrumentation();
             builder.AddOtlpExporter(options =>
                 options.Endpoint = new Uri($"{host}:{port}")
             );
+
             builder.SetResourceBuilder(ResourceBuilder.CreateDefault()
                 .AddService(serviceName, serviceVersion: "1.0.0")
             );
+
             builder.AddHttpClientInstrumentation();
         });
     }

@@ -3,18 +3,18 @@ using Microsoft.Extensions.Logging;
 
 namespace CodeExecutor.UnitTests.Mocks.Repositories;
 
-public abstract class InMemoryRepository<TEntity, TKey> : DBRepo.IReadonlyRepository<TEntity>, DBRepo.IEditableRepository<TEntity>
-
+public abstract class InMemoryRepository<TEntity, TKey> : DBRepo.IReadonlyRepository<TEntity>,
+                                                          DBRepo.IEditableRepository<TEntity>
     where TEntity : DBModels.BaseEntity<TKey>
     where TKey : notnull, new()
 {
     protected readonly Dictionary<TKey, TEntity> Data = new();
 
     protected readonly ILogger? Logger;
-    
+
     protected abstract TKey NextKey();
-    
-    protected InMemoryRepository(ILogger? logger = null) => Logger = logger;
+
+    protected InMemoryRepository(ILogger? logger = null) { Logger = logger; }
 
 
     public Task<int> SaveAsync()
@@ -26,10 +26,10 @@ public abstract class InMemoryRepository<TEntity, TKey> : DBRepo.IReadonlyReposi
     public Task<TEntity?> GetAsync(object key, CancellationToken cancellationToken = default)
     {
         Logger?.LogDebug($"MOCK {nameof(GetAsync)}");
-        
+
         if (key is not TKey tKey)
             throw new InvalidOperationException($"Cannot use key of type {key.GetType()}");
-        
+
         Data.TryGetValue(tKey, out var entity);
         return Task.FromResult(entity);
     }
@@ -66,16 +66,17 @@ public abstract class InMemoryRepository<TEntity, TKey> : DBRepo.IReadonlyReposi
         Logger?.LogDebug($"MOCK {nameof(Update)}");
 
         if (!Data.ContainsKey(updatedItem.Id))
-            throw new KeyNotFoundException($"Entity with key {updatedItem.Id}({updatedItem.Id.GetType()}) does not exist.");
-        
+            throw new KeyNotFoundException(
+                $"Entity with key {updatedItem.Id}({updatedItem.Id.GetType()}) does not exist.");
+
         Data[updatedItem.Id] = updatedItem;
         return Task.FromResult(updatedItem);
     }
 
-    public  Task Delete(TEntity deletedItem)
+    public Task Delete(TEntity deletedItem)
     {
         Logger?.LogDebug($"MOCK {nameof(Delete)}");
-        
+
         Data.Remove(deletedItem.Id);
         return Task.CompletedTask;
     }

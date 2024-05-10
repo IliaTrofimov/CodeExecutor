@@ -1,9 +1,6 @@
 namespace CodeExecutor.DB.Abstractions;
 
-
-/// <summary>
-/// Database connection configuration.
-/// </summary>
+/// <summary>Database connection configuration.</summary>
 public interface IDbConfig
 {
     /// <summary>Database connection string.</summary>

@@ -1,9 +1,7 @@
 namespace CodeExecutor.Messaging.Abstractions.Services;
 
-/// <summary>
-/// Basic interface for receiving messages from queue.
-/// </summary>
-public interface IMessageReceiver<in TMessage> where TMessage: class
+/// <summary>Basic interface for receiving messages from queue.</summary>
+public interface IMessageReceiver<in TMessage> where TMessage : class
 {
     /// <summary>Start listening.</summary>
     public void StartReceive();

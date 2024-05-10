@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CodeExecutor.Dispatcher.Contracts;
+
 
 namespace CodeExecutor.Dispatcher.Services.Utils;
 
@@ -30,7 +30,7 @@ public class AutoMapperProfile : Profile
 
         CreateMap<CodeExecutionRequest, DbModel.CodeExecution>()
             .ForMember(
-                d => d.SourceCode, 
+                d => d.SourceCode,
                 s => s.MapFrom(x => new DbModel.SourceCode { CodeText = x.CodeText }));
 
         CreateMap<Language, DbModel.Language>();

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
 namespace CodeExecutor.DB.Abstractions.Models;
 
 /// <summary>Code execution result data.</summary>
@@ -9,5 +10,6 @@ public class CodeExecutionResult : BaseEntity<Guid>
     public string? Data { get; set; }
 
     /// <summary>Code execution.</summary>
-    [Required] public CodeExecution CodeExecution { get; set; } = null!;
+    [Required]
+    public CodeExecution CodeExecution { get; set; } = null!;
 }

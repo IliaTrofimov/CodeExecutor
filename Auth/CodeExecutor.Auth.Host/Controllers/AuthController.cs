@@ -1,28 +1,25 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using CodeExecutor.Auth.Contracts;
 using CodeExecutor.Auth.Host.Services;
 using CodeExecutor.Common.Models.Exceptions;
 using CodeExecutor.Common.Security;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 
 namespace CodeExecutor.Auth.Host.Controllers;
 
 [ApiController]
 [Route("[controller]/[action]")]
-[Authorize(AuthenticationSchemes =  JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public sealed class AuthController : ControllerBase
 {
     private readonly IAuthService authService;
-    
-    
-    public AuthController(IAuthService authService)
-    {
-        this.authService = authService;
-    }
 
-    
+
+    public AuthController(IAuthService authService) { this.authService = authService; }
+
+
     /// <summary>Get current user information.</summary>
     [HttpGet]
     [AllowAnonymous]
@@ -37,9 +34,10 @@ public sealed class AuthController : ControllerBase
             Username = user.Username,
             IsSuperUser = user.IsSuperUser
         };
+
         return Ok(userInfo);
     }
-    
+
     /// <summary>Login with given username and password.</summary>
     [HttpPost]
     [AllowAnonymous]
@@ -48,7 +46,7 @@ public sealed class AuthController : ControllerBase
         var response = await authService.LoginAsync(request);
         return Ok(response);
     }
-    
+
     /// <summary>Create new user.</summary>
     [HttpPost]
     [AllowAnonymous]

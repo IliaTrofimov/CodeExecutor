@@ -5,8 +5,8 @@ namespace CodeExecutor.UnitTests.Mocks.Repositories;
 
 public class UsersRepositoryMock : InMemoryRepository<DBModels.User, long>, DBRepo.IUsersRepository
 {
-    public UsersRepositoryMock(ILogger? logger = null) : base(logger) {}
-    
+    public UsersRepositoryMock(ILogger? logger = null) : base(logger) { }
+
     public Task<bool> CheckExistenceAsync(string username, byte[] passwordHash)
     {
         Logger?.LogDebug($"MOCK {nameof(CheckExistenceAsync)}");
@@ -19,12 +19,16 @@ public class UsersRepositoryMock : InMemoryRepository<DBModels.User, long>, DBRe
     {
         if (expected.Length != actual.Length)
             return false;
-        
-        for (var i = 0; i < expected.Length; i++) 
-            if (expected[i] != actual[i]) return false;
+
+        for (var i = 0;
+             i < expected.Length;
+             i++)
+            if (expected[i] != actual[i])
+                return false;
+
         return true;
     }
-    
-    
+
+
     protected override long NextKey() => Data.Count;
 }

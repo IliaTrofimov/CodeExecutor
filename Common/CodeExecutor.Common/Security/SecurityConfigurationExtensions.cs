@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
+
 namespace CodeExecutor.Common.Security;
 
 public static class SecurityConfigurationExtensions
@@ -18,7 +19,7 @@ public static class SecurityConfigurationExtensions
         var audience = config.GetValue("Authorization:Audience");
         var tokenKey = config.GetValue("Authorization:Key");
         var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(tokenKey));
-        
+
         services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -41,7 +42,7 @@ public static class SecurityConfigurationExtensions
                 };
             });
     }
-    
+
     /// <summary>Configure CORS.</summary>
     public static void UseDefaultCors(this IApplicationBuilder app, IConfiguration config)
     {
@@ -52,16 +53,16 @@ public static class SecurityConfigurationExtensions
             else
                 opt.AllowAnyHeader();
 
-            if ( config.TryGetValue("CORS:Origins", out var origins))
+            if (config.TryGetValue("CORS:Origins", out var origins))
                 opt.WithOrigins(origins.Split(" "));
             else
                 opt.AllowAnyOrigin();
-            
+
             if (config.TryGetValue("CORS:Methods", out var methods))
                 opt.WithMethods(methods.Split(" "));
             else
                 opt.AllowAnyMethod();
-            
+
             opt.Build();
         });
     }
@@ -71,6 +72,7 @@ public static class SecurityConfigurationExtensions
         var section = config.GetSection("Authorization");
         if (!section.Exists())
             throw new ConfigurationException("Missing Authorization section");
+
         services.AddSingleton(new AuthConfig(section));
     }
 }

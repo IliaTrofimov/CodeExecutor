@@ -8,14 +8,14 @@ public sealed class ApiFault
 {
     /// <summary>Name of this exception.</summary>
     public string ErrorType { get; private set; }
-    
+
     /// <summary>Integer code of this exception.</summary>
     public int Code { get; private set; }
-    
+
     public string Message { get; private set; }
-    
+
     public Dictionary<string, string>? Data { get; }
-    
+
     public string? StackTrace { get; private set; }
 
 
@@ -25,7 +25,7 @@ public sealed class ApiFault
         Message = exception.Message;
         ErrorType = exception.ErrorType;
         StackTrace = exception.StackTrace;
-        
+
         if (exception.Data.Count > 0)
         {
             Data = new Dictionary<string, string>(exception.Data.Count);
@@ -37,40 +37,40 @@ public sealed class ApiFault
         }
     }
 
-    private ApiFault(Exception exception) : this(ApiException.FromBase(exception))
-    {
-    }
-    
+    private ApiFault(Exception exception) : this(ApiException.FromBase(exception)) { }
+
     public static ReadOnlyCollection<ApiFault> Create(ApiException apiException)
     {
         var faults = new List<ApiFault>();
 
-        Exception? current = apiException.InnerException;
+        var current = apiException.InnerException;
         faults.Add(new ApiFault(apiException));
         var depth = 4;
-        
+
         while (depth > 0 && current is not null)
         {
             faults.Add(new ApiFault(current));
             depth--;
             current = current.InnerException;
         }
+
         return faults.AsReadOnly();
     }
-    
+
     public static ReadOnlyCollection<ApiFault> Create(Exception exception)
     {
         var faults = new List<ApiFault>();
 
-        Exception? current = exception;
+        var current = exception;
         var depth = 5;
-        
+
         while (depth > 0 && current is not null)
         {
             faults.Add(new ApiFault(current));
             depth--;
             current = current.InnerException;
         }
+
         return faults.AsReadOnly();
     }
 }

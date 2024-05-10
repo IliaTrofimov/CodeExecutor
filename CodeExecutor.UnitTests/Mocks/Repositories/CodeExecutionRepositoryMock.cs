@@ -4,11 +4,12 @@ using Microsoft.Extensions.Logging;
 namespace CodeExecutor.UnitTests.Mocks.Repositories;
 
 public class CodeExecutionRepositoryMock : InMemoryRepository<DBModels.CodeExecution, Guid>,
-    DBRepo.ICodeExecutionsExplorerRepository, DBRepo.ICodeExecutionsEditorRepository
+                                           DBRepo.ICodeExecutionsExplorerRepository,
+                                           DBRepo.ICodeExecutionsEditorRepository
 {
-    public CodeExecutionRepositoryMock(ILogger? logger = null) : base(logger) {}
-    
-    
+    public CodeExecutionRepositoryMock(ILogger? logger = null) : base(logger) { }
+
+
     public Task<DBModels.CodeExecution?> GetSourceCodeAsync(Guid guid, CancellationToken cancellationToken = default)
     {
         Logger?.LogDebug($"MOCK {nameof(GetSourceCodeAsync)}");
@@ -23,18 +24,20 @@ public class CodeExecutionRepositoryMock : InMemoryRepository<DBModels.CodeExecu
         return Task.FromResult(entity);
     }
 
-    public Task<bool> CheckSecretKeyAsync(Guid guid, string validationTag, CancellationToken cancellationToken = default)
+    public Task<bool> CheckSecretKeyAsync(Guid guid, string validationTag,
+                                          CancellationToken cancellationToken = default)
     {
         Logger?.LogDebug($"MOCK {nameof(CheckSecretKeyAsync)}");
-        return !Data.TryGetValue(guid, out var entity) 
-            ? Task.FromResult(false) 
+        return !Data.TryGetValue(guid, out var entity)
+            ? Task.FromResult(false)
             : Task.FromResult(entity.SecretKey == validationTag);
     }
 
-    public Task<DBModels.CodeExecution> Create(long userId, long languageId, string sourceCode, CancellationToken cancellationToken = default)
+    public Task<DBModels.CodeExecution> Create(long userId, long languageId, string sourceCode,
+                                               CancellationToken cancellationToken = default)
     {
         Logger?.LogDebug($"MOCK {nameof(CodeExecutionRepositoryMock)}.{nameof(Create)}");
-        
+
         var id = NextKey();
         return Create(new DBModels.CodeExecution
         {
@@ -53,31 +56,35 @@ public class CodeExecutionRepositoryMock : InMemoryRepository<DBModels.CodeExecu
         });
     }
 
-    public Task<DBModels.CodeExecution?> SetResult(Guid guid, string? data, string? comment = null, bool? isStarted = null, bool? isFinished = null,
-        bool? isError = null, CancellationToken cancellationToken = default)
+    public Task<DBModels.CodeExecution?> SetResult(Guid guid, string? data, string? comment = null,
+                                                   bool? isStarted = null, bool? isFinished = null,
+                                                   bool? isError = null, CancellationToken cancellationToken = default)
     {
         Logger?.LogDebug($"MOCK {nameof(SetResult)}");
 
         if (!Data.TryGetValue(guid, out var entity))
             return Task.FromResult<DBModels.CodeExecution?>(null);
-        
+
         entity.Result ??= new DBModels.CodeExecutionResult();
         entity.Result.Data = data;
         entity.UpdatedAt = DateTimeOffset.Now;
 
         if (isError is not null)
             entity.IsError = isError.Value;
+
         if (comment is not null)
             entity.Comment = comment;
+
         if (isFinished == true || isError == true)
             entity.FinishedAt = DateTimeOffset.Now;
+
         if (isStarted == true)
             entity.StartedAt = DateTimeOffset.Now;
-        
+
         return Task.FromResult(entity);
     }
 
-    public  Task Delete(Guid guid, CancellationToken cancellationToken = default)
+    public Task Delete(Guid guid, CancellationToken cancellationToken = default)
     {
         Logger?.LogDebug($"MOCK {nameof(CodeExecutionRepositoryMock)}.{nameof(Delete)}");
 

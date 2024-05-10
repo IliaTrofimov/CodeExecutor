@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CodeExecutor.Dispatcher.Contracts;
 
+namespace CodeExecutor.Dispatcher.Contracts;
 
 /// <summary>Request class</summary>
 public sealed class CodeExecutionRequest

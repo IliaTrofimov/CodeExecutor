@@ -1,52 +1,49 @@
 using System.Text;
-using Microsoft.Extensions.Logging;
-
 using BaseCSharpExecutor.Api;
 using CodeExecutor.Dispatcher.Contracts;
+using Microsoft.Extensions.Logging;
 
 
 namespace BaseCSharpExecutor;
 
-
-/// <summary>
-/// Base code executor class.
-/// </summary>
+/// <summary>Base code executor class.</summary>
 public abstract class BaseExecutor
 {
     private readonly ICodeExecutionDispatcherClient dispatcherClient;
     private readonly ILogger<BaseExecutor> logger;
-    
-    
+
+
     protected BaseExecutor(ICodeExecutionDispatcherClient dispatcherClient, ILogger<BaseExecutor> logger)
     {
         this.dispatcherClient = dispatcherClient;
         this.logger = logger;
     }
-    
+
     protected abstract void RunScriptInternal(string sourceCode, Func<Exception, bool> exceptionHandler);
 
 
     /// <summary>Start code execution.</summary>
     public Task StartExecution(ExecutionStartMessage startMessage)
     {
-        var resultTasks = Process(startMessage)
+        IEnumerable<Task> resultTasks = Process(startMessage)
             .Select(res => dispatcherClient.SetResultAsync(res, startMessage.ValidationTag));
-        
+
         return Task.WhenAll(resultTasks);
     }
-    
-    
+
+
     protected IEnumerable<CodeExecutionResult> Process(ExecutionStartMessage startMessage)
     {
         var helper = new ExecutionResultHelper(startMessage.Guid);
-        
+
         if (string.IsNullOrWhiteSpace(startMessage.SourceCode))
         {
             logger.LogInformation("Execution '{executionId}' has empty source code", startMessage.Guid);
             yield return helper.GetError("Execution has empty source code");
+
             yield break;
         }
-        
+
         logger.LogInformation("Execution '{executionId}' is started", startMessage.Guid);
         yield return helper.GetStarted();
 
@@ -57,9 +54,9 @@ public abstract class BaseExecutor
     {
         var (scriptOutput, standardOutput) = CreateScriptWriter();
 
-        var errorsSb = new StringBuilder(); 
+        var errorsSb = new StringBuilder();
         var errorsCount = 0;
-        
+
         bool CatchScriptException(Exception ex)
         {
             errorsSb.AppendLine($"Unhandled exception:\n{ex.Message}\n{ex.StackTrace}\n\n");
@@ -76,29 +73,29 @@ public abstract class BaseExecutor
             {
                 logger.LogWarning("Execution {executionId} finished with {errorsCount} errors",
                     helper.Guid, errorsCount);
+
                 return helper.GetError(errorsCount, $"{scriptOutput}\n\n{errorsSb}");
             }
-            else
-            {
-                logger.LogInformation("Execution {executionId} finished successfully", helper.Guid);
-                return helper.GetSuccess(scriptOutput.ToString());
-            }
+
+            logger.LogInformation("Execution {executionId} finished successfully", helper.Guid);
+            return helper.GetSuccess(scriptOutput.ToString());
         }
         catch (Exception ex)
         {
             Console.SetOut(standardOutput);
             logger.LogError("Execution {executionId} finished with unhandled error {errorType}:\n{error}",
                 helper.Guid, ex.GetType(), ex);
+
             return helper.GetError($"Execution finished with unhandled error {ex.GetType()}");
         }
     }
-    
+
     protected static (StringWriter scriptOutput, StreamWriter standardOutput) CreateScriptWriter()
     {
         var scriptOutput = new StringWriter();
         var standardOutput = new StreamWriter(Console.OpenStandardOutput());
         Console.SetOut(scriptOutput);
-        
+
         return (scriptOutput, standardOutput);
     }
 }

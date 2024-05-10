@@ -1,7 +1,7 @@
 using AutoMapper;
+using CodeExecutor.Dispatcher.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 
-using CodeExecutor.Dispatcher.Services.Interfaces;
 
 namespace CodeExecutor.Dispatcher.Services.Implementations;
 
@@ -14,14 +14,13 @@ public sealed class CodeExecutionDispatcher : ICodeExecutionDispatcher
     private readonly ILogger<CodeExecutionDispatcher> logger;
     private readonly IMapper mapper;
 
-    
-    public CodeExecutionDispatcher(
-        DbRepository.ICodeExecutionsExplorerRepository viewRepository,
-        DbRepository.ICodeExecutionsEditorRepository editRepository,
-        DbRepository.ILanguagesRepository languagesRepository,
-        ICodeExecutionMessaging messaging,
-        ILogger<CodeExecutionDispatcher> logger,
-        IMapper mapper)
+
+    public CodeExecutionDispatcher(DbRepository.ICodeExecutionsExplorerRepository viewRepository,
+                                   DbRepository.ICodeExecutionsEditorRepository editRepository,
+                                   DbRepository.ILanguagesRepository languagesRepository,
+                                   ICodeExecutionMessaging messaging,
+                                   ILogger<CodeExecutionDispatcher> logger,
+                                   IMapper mapper)
     {
         this.viewRepository = viewRepository;
         this.editRepository = editRepository;
@@ -30,18 +29,18 @@ public sealed class CodeExecutionDispatcher : ICodeExecutionDispatcher
         this.mapper = mapper;
         this.logger = logger;
     }
-    
+
     public async Task<CodeExecutionStartResponse> StartCodeExecutionAsync(CodeExecutionRequest request, long userId)
     {
         var dbLanguage = await languagesRepository.GetAsync(request.LanguageId)
-                   ?? throw new BadRequestException($"Language with id {request.LanguageId} not exists");
+                         ?? throw new BadRequestException($"Language with id {request.LanguageId} not exists");
 
         var (execution, secret) = await CreateCodeExecution(request, userId);
         execution.Language = mapper.Map<Language>(dbLanguage)!;
 
         await SendMessage(execution, request.Priority, secret);
         logger.LogInformation("Execution {executionId} is waiting in queue", execution.Guid);
-        
+
         return new CodeExecutionStartResponse
         {
             Guid = execution.Guid,
@@ -62,7 +61,7 @@ public sealed class CodeExecutionDispatcher : ICodeExecutionDispatcher
         await editRepository.SaveAsync();
     }
 
-    
+
     public async Task SetExecutionResultsAsync(CodeExecutionResult result, string validationTag)
     {
         if (result.Data is null && result.Comment is null && result.IsError is null && result.Status is null)
@@ -70,25 +69,28 @@ public sealed class CodeExecutionDispatcher : ICodeExecutionDispatcher
             logger.LogInformation("CodeExecution {executionId} was not updated: empty update request", result.Guid);
             return;
         }
-            
+
         if (!await viewRepository.CheckSecretKeyAsync(result.Guid, validationTag))
             throw new UnauthorizedException("Cannot change this code execution.");
 
-        var task = result.Status switch 
+        Task<DbModel.CodeExecution?> task = result.Status switch
         {
-            CodeExecutionStatus.Started => editRepository.SetResult(result.Guid, result.Data, result.Comment, isStarted: true),
-            CodeExecutionStatus.Finished => editRepository.SetResult(result.Guid, result.Data, result.Comment, isFinished: true),
-            CodeExecutionStatus.Error => editRepository.SetResult(result.Guid, result.Data, result.Comment, isError: true),
-            _ => editRepository.SetResult(result.Guid, result.Data, result.Comment),
+            CodeExecutionStatus.Started => editRepository.SetResult(result.Guid, result.Data, result.Comment, true),
+            CodeExecutionStatus.Finished => editRepository.SetResult(result.Guid, result.Data, result.Comment,
+                isFinished: true),
+            CodeExecutionStatus.Error => editRepository.SetResult(result.Guid, result.Data, result.Comment,
+                isError: true),
+            _ => editRepository.SetResult(result.Guid, result.Data, result.Comment)
         };
+
         await task;
         await editRepository.SaveAsync();
-        
+
         logger.LogInformation("CodeExecution {executionId} was updated:\nstatus={status}, comment={comment}",
             result.Guid, result.Status, result.Comment);
     }
 
-    
+
     private async Task<(CodeExecutionExpanded, string)> CreateCodeExecution(CodeExecutionRequest request, long userId)
     {
         try
@@ -107,7 +109,7 @@ public sealed class CodeExecutionDispatcher : ICodeExecutionDispatcher
     {
         try
         {
-             await messaging.SendStartMessageAsync(execution, msgValidationTag, priority);
+            await messaging.SendStartMessageAsync(execution, msgValidationTag, priority);
         }
         catch (Exception ex)
         {

@@ -1,16 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 
+
 namespace CodeExecutor.Dispatcher.Contracts;
 
-/// <summary>
-/// Execution request rabbit message.
-/// </summary>
+/// <summary>Execution request rabbit message.</summary>
 public sealed class ExecutionStartMessage
 {
     /// <summary>Guid of request to be executed.</summary>
     [Required]
     public Guid Guid { get; set; }
-    
+
     /// <summary>Programming language that will execute this request.</summary>
     [Required]
     public long LanguageId { get; set; }

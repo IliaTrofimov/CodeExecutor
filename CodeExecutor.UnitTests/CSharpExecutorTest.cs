@@ -21,18 +21,16 @@ public class CSharpExecutorTest : TestBase
         Executor = new CSharpExecutor(DispatcherApiMock, new TestLogger<CSharpExecutor>(output));
     }
 
-    private static ExecutionStartMessage GetStartMessage(string? code = null)
-    {
-        return new ExecutionStartMessage
+    private static ExecutionStartMessage GetStartMessage(string? code = null) =>
+        new()
         {
             SourceCode = code ?? "for (int i = 0; i < 100; i++) System.Console.Write('+');",
             LanguageId = LanguagesRepositoryMock.CSharpId,
             ValidationTag = "validationTag",
             Guid = Guid.NewGuid()
         };
-    }
-    
-    
+
+
     [Theory]
     [InlineData(10)]
     [InlineData(10000)]
@@ -45,9 +43,10 @@ public class CSharpExecutorTest : TestBase
             Assert.False(string.IsNullOrWhiteSpace(result.Data));
             Assert.Equal(maxLoop, result.Data.Length);
         };
+
         await Executor.StartExecution(execution);
     }
-    
+
     [Fact]
     public async Task ExecuteNormal()
     {
@@ -60,12 +59,14 @@ public class CSharpExecutorTest : TestBase
             Assert.Equal(100, result.Data.Length);
             finished = true;
         };
+
         DispatcherApiMock.OnStarted = result =>
         {
             Assert.False(string.IsNullOrWhiteSpace(result.Comment));
             Assert.Contains("has started", result.Comment);
             started = true;
         };
+
         await Executor.StartExecution(execution);
         Assert.True(started);
         Assert.True(finished);
@@ -80,7 +81,7 @@ public class CSharpExecutorTest : TestBase
         DispatcherApiMock.OnSetError = result => Assert.False(string.IsNullOrWhiteSpace(result.Comment));
         await Executor.StartExecution(execution);
     }
-    
+
     [Fact]
     public async Task ExecuteEmpty()
     {
@@ -89,7 +90,7 @@ public class CSharpExecutorTest : TestBase
         DispatcherApiMock.OnSetError = result => Assert.Contains("has empty source code", result.Comment);
         await Executor.StartExecution(execution);
     }
-    
+
     [Fact]
     public async Task ExecuteBasicErrors()
     {
@@ -101,6 +102,7 @@ public class CSharpExecutorTest : TestBase
             Assert.Contains("1 error", result.Comment);
             Assert.Contains("test-error", result.Data);
         };
+
         await Executor.StartExecution(execution);
     }
 }

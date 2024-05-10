@@ -6,12 +6,13 @@ using CodeExecutor.UnitTests.Mocks.Repositories;
 using CodeExecutor.UnitTests.Mocks.Services;
 using Xunit.Abstractions;
 
+
 namespace CodeExecutor.UnitTests;
 
 public class DispatcherTests : TestBase
 {
     protected const long userId = 1;
-    
+
     protected ICodeExecutionDispatcher ExecutionDispatcher;
     protected ICodeExecutionExplorer ExecutionExplorer;
 
@@ -19,15 +20,15 @@ public class DispatcherTests : TestBase
     public DispatcherTests(ITestOutputHelper output) : base(output)
     {
         ExecutionDispatcher = new CodeExecutionDispatcher(ExecutionsExplorerRepository,
-            ExecutionsEditorRepository, 
-            LanguagesRepository, 
+            ExecutionsEditorRepository,
+            LanguagesRepository,
             ExecutionMessaging,
             new TestLogger<CodeExecutionDispatcher>(output),
             Mapper);
-        
+
         ExecutionExplorer = new CodeExecutionExplorer(ExecutionsExplorerRepository, Mapper);
     }
-    
+
     [Fact]
     public async Task<Guid> StartExecutionDefault()
     {
@@ -41,7 +42,7 @@ public class DispatcherTests : TestBase
         var response = await ExecutionDispatcher.StartCodeExecutionAsync(request, userId);
         Assert.NotNull(response);
         Assert.NotEqual(new Guid(), response.Guid);
-        
+
         var db = await ExecutionsExplorerRepository.GetAsync(response.Guid);
         Assert.NotNull(db);
         Assert.Equal(false, db.IsError);
@@ -53,7 +54,7 @@ public class DispatcherTests : TestBase
 
         return response.Guid;
     }
-    
+
     [Fact]
     public async Task StartExecutionMissingLanguage()
     {
@@ -63,14 +64,15 @@ public class DispatcherTests : TestBase
             CodeText = "hello world",
             Priority = ExecutionPriority.High
         };
-        var ex = await Assert.ThrowsAsync<BadRequestException>(async () => 
+
+        var ex = await Assert.ThrowsAsync<BadRequestException>(async () =>
             await ExecutionDispatcher.StartCodeExecutionAsync(request, userId));
 
         Assert.Contains("Language", ex.Message);
         Assert.Contains("not exists", ex.Message);
     }
-    
-    
+
+
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
@@ -82,7 +84,7 @@ public class DispatcherTests : TestBase
             var db = await ExecutionsExplorerRepository.GetAsync(guid);
             Assert.NotNull(db?.Result);
             db.Result.Data = "data\ndata";
-            
+
             var dto = await ExecutionExplorer.GetExecutionResultAsync(guid, userId);
             Assert.NotNull(dto);
 
@@ -100,19 +102,19 @@ public class DispatcherTests : TestBase
             Assert.Null(dto);
         }
     }
-    
+
     [Fact]
     public async Task GetExecutionResultsWrongUser()
     {
         var guid = await StartExecutionDefault();
-        var ex = await Assert.ThrowsAsync<UnauthorizedException>(async () => 
+        var ex = await Assert.ThrowsAsync<UnauthorizedException>(async () =>
             await ExecutionExplorer.GetExecutionResultAsync(guid, userId + 1));
-        
+
         Assert.Contains("Unauthorized", ex.Message);
         Assert.Contains("Cannot view this execution", ex.Message);
     }
-    
-    
+
+
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
@@ -123,7 +125,7 @@ public class DispatcherTests : TestBase
             var guid = await StartExecutionDefault();
             var db = await ExecutionsExplorerRepository.GetAsync(guid);
             Assert.NotNull(db?.SourceCode);
-            
+
             var dto = await ExecutionExplorer.GetSourceCodeAsync(guid, userId);
             Assert.NotNull(dto);
 
@@ -137,24 +139,24 @@ public class DispatcherTests : TestBase
             Assert.Null(dto);
         }
     }
-    
+
     [Fact]
     public async Task GetExecutionSourcesWrongUser()
     {
         var guid = await StartExecutionDefault();
-        var ex = await Assert.ThrowsAsync<UnauthorizedException>(async () => 
+        var ex = await Assert.ThrowsAsync<UnauthorizedException>(async () =>
             await ExecutionExplorer.GetSourceCodeAsync(guid, userId + 1));
-        
+
         Assert.Contains("Unauthorized", ex.Message);
         Assert.Contains("Cannot view this execution", ex.Message);
     }
-    
-    
+
+
     [Theory]
-    [InlineData(false,  "new data", null)]
-    [InlineData(true,  "new data", null)]
-    [InlineData(false,  null, "new comment")]
-    [InlineData(true,  null, "new comment")]
+    [InlineData(false, "new data", null)]
+    [InlineData(true, "new data", null)]
+    [InlineData(false, null, "new comment")]
+    [InlineData(true, null, "new comment")]
     [InlineData(null, "new data", "new comment")]
     [InlineData(true, "new data", "new comment")]
     public async Task SetExecutionResults(bool? isError, string? data, string? comment)
@@ -162,12 +164,12 @@ public class DispatcherTests : TestBase
         var guid = await StartExecutionDefault();
         var db = await ExecutionsExplorerRepository.GetAsync(guid);
         Assert.NotNull(db);
-        
+
         var updatedAt = db.UpdatedAt;
         var dbIsError = db.IsError;
         var dbData = db.Result?.Data;
         var dbComment = db.Comment;
-        
+
         var executionResult = new CodeExecutionResult
         {
             Guid = guid,
@@ -176,18 +178,19 @@ public class DispatcherTests : TestBase
             Status = isError == true ? CodeExecutionStatus.Error : CodeExecutionStatus.Finished,
             Comment = comment
         };
+
         await Task.Delay(1000);
         await ExecutionDispatcher.SetExecutionResultsAsync(executionResult, db.SecretKey);
-        
+
         var dbUpdated = await ExecutionsExplorerRepository.GetAsync(guid);
         Assert.NotNull(dbUpdated);
-        
+
         Assert.Equal(isError ?? dbIsError, dbUpdated.IsError);
         Assert.Equal(data ?? dbData, dbUpdated.Result?.Data);
         Assert.Equal(comment ?? dbComment, dbUpdated.Comment);
         Assert.True(updatedAt < dbUpdated.UpdatedAt, "updatedAt < dbUpdated.UpdatedAt");
     }
-    
+
     [Theory]
     [InlineData(true, CodeExecutionStatus.Error)]
     [InlineData(true, CodeExecutionStatus.Pending)]
@@ -195,17 +198,18 @@ public class DispatcherTests : TestBase
     [InlineData(false, CodeExecutionStatus.Started)]
     [InlineData(false, CodeExecutionStatus.Finished)]
     [InlineData(false, CodeExecutionStatus.Pending)]
-    public async Task SetExecutionResultsCheckStatus(bool? isError, CodeExecutionStatus? status, CodeExecutionStatus? prevStatus = null)
+    public async Task SetExecutionResultsCheckStatus(bool? isError, CodeExecutionStatus? status,
+                                                     CodeExecutionStatus? prevStatus = null)
     {
         var guid = await StartExecutionDefault();
         var db = await ExecutionsExplorerRepository.GetAsync(guid);
         Assert.NotNull(db);
-        
+
         var updatedAt = db.UpdatedAt;
         var requestedAt = db.RequestedAt;
-        var startedAtAt = db.StartedAt;
-        var finishedAt = db.FinishedAt;
-        
+        DateTimeOffset? startedAtAt = db.StartedAt;
+        DateTimeOffset? finishedAt = db.FinishedAt;
+
         var executionResult = new CodeExecutionResult
         {
             Guid = guid,
@@ -214,9 +218,10 @@ public class DispatcherTests : TestBase
             Status = status,
             Comment = "new comment"
         };
+
         await Task.Delay(1000);
         await ExecutionDispatcher.SetExecutionResultsAsync(executionResult, db.SecretKey);
-        
+
         var dbUpdated = await ExecutionsExplorerRepository.GetAsync(guid);
         Assert.NotNull(dbUpdated);
         Assert.True(updatedAt < dbUpdated.UpdatedAt, "updatedAt < dbUpdated.UpdatedAt");
@@ -234,64 +239,63 @@ public class DispatcherTests : TestBase
                 break;
         }
     }
-    
+
     [Fact]
     public async Task SetExecutionResultsEmpty()
     {
         var guid = await StartExecutionDefault();
         var db = await ExecutionsExplorerRepository.GetAsync(guid);
         Assert.NotNull(db);
-        
+
         var updatedAt = db.UpdatedAt;
         var dbIsError = db.IsError;
         var dbData = db.Result?.Data;
         var dbComment = db.Comment;
-        
+
         var executionResult = new CodeExecutionResult { Guid = guid };
-        
+
         await Task.Delay(1000);
         await ExecutionDispatcher.SetExecutionResultsAsync(executionResult, db.SecretKey);
-        
+
         var dbUpdated = await ExecutionsExplorerRepository.GetAsync(guid);
         Assert.NotNull(dbUpdated);
-        
+
         Assert.Equal(dbIsError, dbUpdated.IsError);
         Assert.Equal(dbData, dbUpdated.Result?.Data);
         Assert.Equal(dbComment, dbUpdated.Comment);
         Assert.Equal(updatedAt, dbUpdated.UpdatedAt);
     }
-    
+
     [Fact]
     public async Task SetExecutionResultsWrongValidationTag()
     {
         var guid = await StartExecutionDefault();
         var db = await ExecutionsExplorerRepository.GetAsync(guid);
         Assert.NotNull(db);
-        
+
         var updatedAt = db.UpdatedAt;
         var dbIsError = db.IsError;
         var dbData = db.Result?.Data;
         var dbComment = db.Comment;
-        
+
         var executionResult = new CodeExecutionResult
         {
             Guid = guid,
             IsError = true
         };
-        
+
         await Task.Delay(1000);
-        var ex = await Assert.ThrowsAsync<UnauthorizedException>(async () => 
+        var ex = await Assert.ThrowsAsync<UnauthorizedException>(async () =>
             await ExecutionDispatcher.SetExecutionResultsAsync(executionResult, "x"));
 
         Assert.Contains("Cannot change", ex.Message);
-        
+
         var dbUpdated = await ExecutionsExplorerRepository.GetAsync(guid);
         Assert.NotNull(dbUpdated);
-        
+
         Assert.Equal(dbIsError, dbUpdated.IsError);
         Assert.Equal(dbData, dbUpdated.Result?.Data);
         Assert.Equal(dbComment, dbUpdated.Comment);
         Assert.Equal(updatedAt, dbUpdated.UpdatedAt);
     }
-
 }

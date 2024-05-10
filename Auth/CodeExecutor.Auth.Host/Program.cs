@@ -1,10 +1,9 @@
-using Microsoft.OpenApi.Models;
-
-using CodeExecutor.DB;
 using CodeExecutor.Auth.Host;
 using CodeExecutor.Common.Logging;
 using CodeExecutor.Common.Middleware;
 using CodeExecutor.Common.Security;
+using CodeExecutor.DB;
+using Microsoft.OpenApi.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);

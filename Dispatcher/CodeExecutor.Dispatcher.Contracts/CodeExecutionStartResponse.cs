@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+
 namespace CodeExecutor.Dispatcher.Contracts;
 
-
-/// <summary>
-/// Class that contains Guid of newly created code execution and some additional comment.
-/// </summary>
+/// <summary>Class that contains Guid of newly created code execution and some additional comment.</summary>
 public sealed class CodeExecutionStartResponse
 {
     /// <summary>Guid of code execution process.</summary>

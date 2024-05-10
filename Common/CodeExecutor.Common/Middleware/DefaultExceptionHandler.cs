@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Text.Json;
 using CodeExecutor.Common.Models.Entities;
 using CodeExecutor.Common.Models.Exceptions;
@@ -11,7 +12,7 @@ public class DefaultExceptionHandler
 {
     private readonly RequestDelegate next;
     private readonly ILogger<DefaultExceptionHandler> logger;
-    
+
     public DefaultExceptionHandler(RequestDelegate next, ILogger<DefaultExceptionHandler> logger)
     {
         this.logger = logger;
@@ -37,12 +38,12 @@ public class DefaultExceptionHandler
     private Task HandleExceptionAsync(HttpContext context, ApiException ex)
     {
         logger.LogError("Unexpected server error ({exception}):\n{message}", ex.GetType().Name, ex.Message);
-        var faults = ApiFault.Create(ex);
+        ReadOnlyCollection<ApiFault> faults = ApiFault.Create(ex);
         var response = JsonSerializer.Serialize(faults);
-        
+
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = ex.Code;
-        
+
         return context.Response.WriteAsync(response);
     }
 }
