@@ -73,10 +73,10 @@ public sealed class AuthService : IAuthService, IDisposable
     public async Task<LoginResponse> CreteUserAsync(CreateUserRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Username))
-            throw new ApiException("Username is required", HttpStatusCode.BadRequest);
+            throw new BadRequestException("Username is required");
 
         if (string.IsNullOrWhiteSpace(request.Password))
-            throw new ApiException("Password is required", HttpStatusCode.BadRequest);
+            throw new BadRequestException("Password is required");
 
         var hash = GetPasswordHash(request.Password);
         var user = await usersRepository.Create(new User

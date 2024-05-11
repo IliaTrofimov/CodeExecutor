@@ -1,6 +1,7 @@
 using AutoMapper;
 using CodeExecutor.DB.Repository;
 using CodeExecutor.Dispatcher.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace CodeExecutor.Dispatcher.Services.Implementations;
@@ -46,7 +47,9 @@ public sealed class CodeExecutionExplorer : ICodeExecutionExplorer
     public async Task<List<CodeExecution>> GetExecutionsListAsync(long userId, int? skip = null, int? take = null,
                                                                   IEnumerable<Guid>? guids = null)
     {
-        IQueryable<DbModel.CodeExecution> query = viewRepository.Query().Where(e => e.InitiatorId == userId);
+        IQueryable<DbModel.CodeExecution> query = viewRepository.Query()
+            .Where(e => e.InitiatorId == userId)
+            .Include(e => e.Language);
 
         if (guids is not null)
             query = query.Where(e => guids.Contains(e.Id));

@@ -1,6 +1,7 @@
 #region
 
 using CodeExecutor.Dispatcher.Contracts;
+using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
 #endregion
@@ -9,8 +10,7 @@ namespace CodeExecutor.UnitTests;
 
 public class MapperTests(ITestOutputHelper output) : TestBase(output)
 {
-    private static (DBModels.CodeExecution db, CodeExecution dto) GetCodeExecutions(
-    bool nullResults = false, bool nullSource = false)
+    private static (DBModels.CodeExecution db, CodeExecution dto) GetCodeExecutions(bool nullResults = false, bool nullSource = false)
     {
         var languages = GetLanguages();
         var id = Guid.NewGuid();
@@ -98,7 +98,7 @@ public class MapperTests(ITestOutputHelper output) : TestBase(output)
         Assert.Equal(db.Language.Name, dtoSmall.Language.Name);
         Assert.Equal(db.Language.Version, dtoSmall.Language.Version);
 
-        Output.WriteLine("Mapper.Map<CodeExecution>() IS SUCCESSFUL");
+        Output.LogInformation("Mapper.Map<CodeExecution>() IS SUCCESSFUL");
         var dtoExpanded = Mapper.Map<CodeExecutionExpanded>(db);
 
         Assert.NotNull(dtoExpanded);
@@ -115,7 +115,7 @@ public class MapperTests(ITestOutputHelper output) : TestBase(output)
         Assert.Equal(db.Language.Name, dtoSmall.Language.Name);
         Assert.Equal(db.Language.Version, dtoSmall.Language.Version);
 
-        Output.WriteLine("Mapper.Map<CodeExecutionExpanded>() IS SUCCESSFUL");
+        Output.LogInformation("Mapper.Map<CodeExecutionExpanded>() IS SUCCESSFUL");
     }
 
     [Fact]

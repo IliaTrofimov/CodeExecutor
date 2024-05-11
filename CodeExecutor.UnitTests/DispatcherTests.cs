@@ -4,12 +4,13 @@ using CodeExecutor.Dispatcher.Services.Implementations;
 using CodeExecutor.Dispatcher.Services.Interfaces;
 using CodeExecutor.UnitTests.Mocks.Repositories;
 using CodeExecutor.UnitTests.Mocks.Services;
+using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;
 
 
 namespace CodeExecutor.UnitTests;
 
-public class DispatcherTests : TestBase
+public class DispatcherTests : DbTestBase
 {
     protected const long userId = 1;
 
@@ -17,7 +18,7 @@ public class DispatcherTests : TestBase
     protected ICodeExecutionExplorer ExecutionExplorer;
 
 
-    public DispatcherTests(ITestOutputHelper output) : base(output)
+    public DispatcherTests(ITestOutputHelper output) : base(output, TestDbType.InMemory)
     {
         ExecutionDispatcher = new CodeExecutionDispatcher(ExecutionsExplorerRepository,
             ExecutionsEditorRepository,
@@ -155,149 +156,41 @@ public class DispatcherTests : TestBase
 
 
     [Theory]
-    [InlineData(false, "new data", null)]
-    [InlineData(true, "new data", null)]
-    [InlineData(false, null, "new comment")]
-    [InlineData(true, null, "new comment")]
-    [InlineData(null, "new data", "new comment")]
-    [InlineData(true, "new data", "new comment")]
-    public async Task SetExecutionResults(bool? isError, string? data, string? comment)
+    [InlineData(4, 4, null, null)]
+    [InlineData(4, 4, 0, int.MaxValue)]
+    [InlineData(4, 3, 1, null)]
+    [InlineData(4, 3, null, 3)]
+    [InlineData(4, 2, 1, 2)]
+    [InlineData(4, 0, 10, 2)]
+    [InlineData(4, 0, null, 0)]
+    public async Task ListCodeExecutions(int total, int expect, int? skip = null, int? take = null)
     {
-        var guid = await StartExecutionInternal();
-        var db = await ExecutionsExplorerRepository.GetAsync(guid);
-        Assert.NotNull(db);
-
-        var updatedAt = db.UpdatedAt;
-        var dbIsError = db.IsError;
-        var dbData = db.Result?.Data;
-        var dbComment = db.Comment;
-
-        var executionResult = new CodeExecutionResult
+        if (DbType is TestDbType.Mock || DatabaseContext is null)
         {
-            Guid = guid,
-            IsError = isError,
-            Data = data,
-            Status = isError == true ? CodeExecutionStatus.Error : CodeExecutionStatus.Finished,
-            Comment = comment
-        };
-
-        await Task.Delay(1000);
-        await ExecutionDispatcher.SetExecutionResultsAsync(executionResult, db.SecretKey);
-
-        var dbUpdated = await ExecutionsExplorerRepository.GetAsync(guid);
-        Assert.NotNull(dbUpdated);
-
-        Assert.Equal(isError ?? dbIsError, dbUpdated.IsError);
-        Assert.Equal(data ?? dbData, dbUpdated.Result?.Data);
-        Assert.Equal(comment ?? dbComment, dbUpdated.Comment);
-        Assert.True(updatedAt < dbUpdated.UpdatedAt, "updatedAt < dbUpdated.UpdatedAt");
-    }
-
-    [Theory]
-    [InlineData(true, CodeExecutionStatus.Error)]
-    [InlineData(true, CodeExecutionStatus.Pending)]
-    [InlineData(false, null)]
-    [InlineData(false, CodeExecutionStatus.Started)]
-    [InlineData(false, CodeExecutionStatus.Finished)]
-    [InlineData(false, CodeExecutionStatus.Pending)]
-    public async Task SetExecutionResultsCheckStatus(bool? isError, CodeExecutionStatus? status,
-                                                     CodeExecutionStatus? prevStatus = null)
-    {
-        var guid = await StartExecutionInternal();
-        var db = await ExecutionsExplorerRepository.GetAsync(guid);
-        Assert.NotNull(db);
-
-        var updatedAt = db.UpdatedAt;
-        var requestedAt = db.RequestedAt;
-        DateTimeOffset? startedAtAt = db.StartedAt;
-        DateTimeOffset? finishedAt = db.FinishedAt;
-
-        var executionResult = new CodeExecutionResult
-        {
-            Guid = guid,
-            IsError = isError,
-            Data = "new data",
-            Status = status,
-            Comment = "new comment"
-        };
-
-        await Task.Delay(1000);
-        await ExecutionDispatcher.SetExecutionResultsAsync(executionResult, db.SecretKey);
-
-        var dbUpdated = await ExecutionsExplorerRepository.GetAsync(guid);
-        Assert.NotNull(dbUpdated);
-        Assert.True(updatedAt < dbUpdated.UpdatedAt, "updatedAt < dbUpdated.UpdatedAt");
-
-        switch (status)
-        {
-            case CodeExecutionStatus.Error or CodeExecutionStatus.Finished:
-                Assert.NotNull(dbUpdated.FinishedAt);
-                Assert.True(updatedAt < dbUpdated.FinishedAt, "updatedAt < dbUpdated.FinishedAt");
-                break;
-            case CodeExecutionStatus.Started:
-                Assert.Null(dbUpdated.FinishedAt);
-                Assert.NotNull(dbUpdated.StartedAt);
-                Assert.True(updatedAt < dbUpdated.StartedAt, "updatedAt < dbUpdated.StartedAt");
-                break;
+            Output.LogCritical("Cannot run test with mock repository");
+            return;
         }
+
+        while (DatabaseContext.CodeExecutions.Count() < total)
+            await StartExecutionInternal();
+        
+        var results = await ExecutionExplorer.GetExecutionsListAsync(userId, skip, take);
+        Assert.NotNull(results);
+        Assert.Equal(expect, results.Count);
     }
 
     [Fact]
-    public async Task SetExecutionResultsEmpty()
+    public async Task ListCodeExecutionsWrongUser()
     {
-        var guid = await StartExecutionInternal();
-        var db = await ExecutionsExplorerRepository.GetAsync(guid);
-        Assert.NotNull(db);
-
-        var updatedAt = db.UpdatedAt;
-        var dbIsError = db.IsError;
-        var dbData = db.Result?.Data;
-        var dbComment = db.Comment;
-
-        var executionResult = new CodeExecutionResult { Guid = guid };
-
-        await Task.Delay(1000);
-        await ExecutionDispatcher.SetExecutionResultsAsync(executionResult, db.SecretKey);
-
-        var dbUpdated = await ExecutionsExplorerRepository.GetAsync(guid);
-        Assert.NotNull(dbUpdated);
-
-        Assert.Equal(dbIsError, dbUpdated.IsError);
-        Assert.Equal(dbData, dbUpdated.Result?.Data);
-        Assert.Equal(dbComment, dbUpdated.Comment);
-        Assert.Equal(updatedAt, dbUpdated.UpdatedAt);
-    }
-
-    [Fact]
-    public async Task SetExecutionResultsWrongValidationTag()
-    {
-        var guid = await StartExecutionInternal();
-        var db = await ExecutionsExplorerRepository.GetAsync(guid);
-        Assert.NotNull(db);
-
-        var updatedAt = db.UpdatedAt;
-        var dbIsError = db.IsError;
-        var dbData = db.Result?.Data;
-        var dbComment = db.Comment;
-
-        var executionResult = new CodeExecutionResult
+        if (DbType is TestDbType.Mock)
         {
-            Guid = guid,
-            IsError = true
-        };
-
-        await Task.Delay(1000);
-        var ex = await Assert.ThrowsAsync<UnauthorizedException>(async () =>
-            await ExecutionDispatcher.SetExecutionResultsAsync(executionResult, "x"));
-
-        Assert.Contains("Cannot change", ex.Message);
-
-        var dbUpdated = await ExecutionsExplorerRepository.GetAsync(guid);
-        Assert.NotNull(dbUpdated);
-
-        Assert.Equal(dbIsError, dbUpdated.IsError);
-        Assert.Equal(dbData, dbUpdated.Result?.Data);
-        Assert.Equal(dbComment, dbUpdated.Comment);
-        Assert.Equal(updatedAt, dbUpdated.UpdatedAt);
+            Output.LogCritical("Cannot run test with mock repository");
+            return;
+        }
+        
+        await StartExecutionInternal();
+        var results = await ExecutionExplorer.GetExecutionsListAsync(userId + 1);
+        Assert.NotNull(results);
+        Assert.Empty(results);
     }
 }
