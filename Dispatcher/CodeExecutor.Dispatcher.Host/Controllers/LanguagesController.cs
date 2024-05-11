@@ -20,8 +20,7 @@ public sealed class LanguagesController : ControllerBase
         this.logger = logger;
         this.languagesService = languagesService;
     }
-
-
+    
     /// <summary>Get list of all available programming languages.</summary>
     [HttpGet]
     [AllowAnonymous]
