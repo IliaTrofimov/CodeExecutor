@@ -1,5 +1,4 @@
 using CodeExecutor.Auth.Host.Services;
-using CodeExecutor.Common.Health;
 using CodeExecutor.Common.Security;
 using CodeExecutor.DB.Abstractions.Repository;
 using CodeExecutor.DB.Repository;
@@ -13,9 +12,6 @@ public static class ServicesConfigurations
     {
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<IUsersRepository, UsersRepository>();
-        services.AddHealthChecks()
-            .AddCheck<HealthCheckService>("DefaultHealthCheck")
-            .AddCheck<PingCheckService>("PingHealthCheck", timeout: new TimeSpan(0, 0, 1));
     }
 
     public static void AddConfigs(this IServiceCollection services, IConfiguration config)

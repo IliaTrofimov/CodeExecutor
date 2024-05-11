@@ -1,4 +1,3 @@
-using CodeExecutor.Common.Health;
 using CodeExecutor.Common.Security;
 using CodeExecutor.DB;
 using CodeExecutor.DB.Repository;
@@ -23,10 +22,6 @@ public static class ServicesConfigurations
         services.AddScoped<ICodeExecutionDispatcher, CodeExecutionDispatcher>();
         services.AddScoped<ICodeExecutionMessaging, CodeExecutionMq>();
         services.AddScoped<ICodeExecutionExplorer, CodeExecutionExplorer>();
-
-        services.AddHealthChecks()
-            .AddCheck<HealthCheckService>("DefaultHealthCheck")
-            .AddCheck<PingCheckService>("Ping");
         
         services.AddAutoMapper(o => o.AddProfile<AutoMapperProfile>());
     }

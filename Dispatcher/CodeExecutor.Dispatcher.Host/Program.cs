@@ -1,5 +1,4 @@
-﻿using CodeExecutor.Common.Health;
-using CodeExecutor.Common.Logging;
+﻿using CodeExecutor.Common.Logging;
 using CodeExecutor.Common.Middleware;
 using CodeExecutor.Common.Security;
 using CodeExecutor.DB;
@@ -19,16 +18,15 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = builder.Environment.ApplicationName, Version = "v1" });
 });
 
+
 builder.Services.AddConsoleLogger();
 builder.Services.AddJwtBearer(builder.Configuration);
 builder.Services.AddDataBase(builder.Configuration);
 builder.Services.AddConfigs(builder.Configuration);
 builder.Services.AddServices(builder.Configuration);
 
+
 var app = builder.Build();
-
-app.MapHealthChecks("/health");
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -42,7 +40,5 @@ app.UseDefaultCors(builder.Configuration);
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.AddPingHealthCheck();
-
 
 app.Run();

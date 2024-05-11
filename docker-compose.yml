@@ -4,16 +4,14 @@
 
   code.executor.auth:
     image: codeexecutor.auth.host
-    hostname: code.executor.auth
     depends_on:
-      - postgres
+      - db
     ports:
-      - 5020:80/tcp
-      - 5021:443/tcp
+      - "127.0.0.1:5020:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_HTTP_PORTS=80
-      - Database__PostgreSql="Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=1"
+      - ASPNETCORE_URLS=http://*:80/
+      - Database__PostgreSql=Host=db;Port=5432;Database=postgres;Username=postgres;Password=1
     build:
       context: .
       dockerfile: Auth/CodeExecutor.Auth.Host/Dockerfile
@@ -24,16 +22,15 @@
   
   code.executor.dispatcher:
     image: codeexecutor.dispatcher.host
-    hostname: code.executor.dispatcher
     depends_on:
-      - postgres
-      - rabbitmqx
+      - db
+      - rabbitmq
     ports:
-      - "127.0.0.1:8080:80"
+      - "127.0.0.1:5030:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_HTTP_PORTS=80
-      - Database__PostgreSql="Host=postgres;Port=5432;Database=postgres;Username=postgres;Password=1"
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://*:80/
+      - Database__PostgreSql=Host=db;Port=5432;Database=postgres;Username=postgres;Password=1
       - RabbitMq__Host=rabbitmq
       - RabbitMq__Port=5672
       - RabbitMq__Username=rmuser
@@ -49,6 +46,7 @@
   csharp.executor:
     image: csharpexecutor
     depends_on:
+      - code.executor.dispatcher
       - rabbitmq
     environment:
       - Api__DispatcherUrl=http://code.executor.dispatcher:5030
@@ -67,9 +65,8 @@
   
   # Infrastructure =============================================== 
   
-  postgres:
+  db:
     image: postgres
-    hostname: postgres
     restart: always
     ports:
       - 5432:5432
@@ -78,14 +75,14 @@
       POSTGRES_PASSWORD: 1
       POSTGRES_DB: postgres
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - db:/var/lib/postgresql/data
     networks:
       - backend
 
   pgadmin:
     image: dpage/pgadmin4
     depends_on:
-      - postgres
+      - db
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@pgadmin.com
       PGADMIN_DEFAULT_PASSWORD: 1
@@ -114,7 +111,7 @@
       - backend
 
 volumes:
-  postgres:
+  db:
   pgadmin:
   rabbitmq:
   dispatcher:
