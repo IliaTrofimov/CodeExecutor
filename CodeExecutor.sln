@@ -24,6 +24,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CE0B54BD-95FD-4CE0-B480-20CD9F2AC1DD}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
+		readme.md = readme.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeExecutor.UnitTests", "CodeExecutor.UnitTests\CodeExecutor.UnitTests.csproj", "{F1D42948-9057-4F05-A96A-6757AA2C3FAE}"

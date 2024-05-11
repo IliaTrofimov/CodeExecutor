@@ -8,7 +8,22 @@ ASP.NET demo project for remote code executing.
 
 ### Components architecture
 Using ASP.NET (.net 8) for backend, and React for frontend part.
-* **CodeExecutor.Auth** (url: `your_host/auth/`) for managing user accounts and authentication/authorization with JWT. Depends only on database (Postgres).
-* **CodeExecutor.Dispatcher** (urls: `your_host/codeExecutions/` - for users, `your_host/codeExecutionsModification/` - for internal usage) for managing code executions (start, view results/sources, delete from history). Depends on database (Postgres) and message queue (RabbitMQ) for communicating with code runners.
+* **CodeExecutor.Auth** (url: `host/auth/`) for managing user accounts and authentication/authorization with JWT. Depends only on database (Postgres) to store data.
+* **CodeExecutor.Dispatcher** (urls: `host/codeExecutions/` - public usage, `host/codeExecutionsModification/` - internal usage) for managing code executions (start, view results/sources, delete from history). Depends on database (Postgres) and message queue (RabbitMQ) for communicating with code runners.
+* **CSharpCodeExecutor** - the only code runner yet developed. Receives messages from RabbitMQ, validates source code and runs it. Results are being returned to **CodeExecutor.Dispatcher** at `host/codeExecutionsModification/`. 
 * **CodeExecutor.UI** - user interface.
-* **CSharp12Executor** - the only code runner yet developed. Receives messages from RabbitMQ, validates source code and runs it. Results are being returned to **CodeExecutor.Dispatcher** at `your_host/codeExecutionsModification/`.
+
+
+### Deployment and running
+**Local**
+
+To run project locally you must build and run desired C# projects (**CodeExecutor.Auth.Host**, **CodeExecutor.Dispatcher.Host** or **CSharpCodeExecutor**). See `appsettings.Development.json` to configure services' parameters. 
+
+**Docker**
+
+Use `docker-compose.yml` file to run project in Docker. `appsettings.Production.json` is configuring services, also parameters can be passed to services inside compose `environment` section.
+
+**Connections**
+* Use `localhost` to connect to all services when running locally.
+* Use container name (e.g. `rabbitmq` or `code.executor.dispatcher:80`) to connect services inside Docker.
+* Use container port to connect C# services inside Docker (`code.executor.dispatcher:80` not `code.executor.dispatcher:5030`).
