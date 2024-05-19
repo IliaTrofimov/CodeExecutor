@@ -22,5 +22,10 @@ public sealed class ExecutionStartMessage
     [Required]
     public string SourceCode { get; set; } = null!;
 
-    [Required] public string ValidationTag { get; set; } = null!;
+    /// <summary>Validation tag required for code execution modification.</summary>
+    [Required]
+    public string ValidationTag { get; set; } = null!;
+    
+    /// <summary>Open telemetry trace id.</summary>
+    public string? TraceId { get; set; }
 }

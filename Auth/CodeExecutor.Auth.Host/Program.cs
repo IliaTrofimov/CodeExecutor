@@ -3,6 +3,7 @@ using CodeExecutor.Common.Logging;
 using CodeExecutor.Common.Middleware;
 using CodeExecutor.Common.Security;
 using CodeExecutor.DB;
+using CodeExecutor.Telemetry;
 using Microsoft.OpenApi.Models;
 
 
@@ -23,6 +24,7 @@ builder.Services.AddJwtBearer(builder.Configuration);
 builder.Services.AddDataBase(builder.Configuration);
 builder.Services.AddConfigs(builder.Configuration);
 builder.Services.AddServices(builder.Configuration);
+builder.Services.AddTelemetry(builder.Configuration, builder.Environment.ApplicationName);
 
 
 var app = builder.Build();

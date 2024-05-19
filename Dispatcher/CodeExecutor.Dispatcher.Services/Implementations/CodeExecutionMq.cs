@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using CodeExecutor.Dispatcher.Services.Interfaces;
 using CodeExecutor.Messaging.Services;
 using Microsoft.Extensions.Logging;
@@ -25,7 +26,8 @@ public sealed class CodeExecutionMq : BasicMessageSender, ICodeExecutionMessagin
             LanguageId = codeExecution.Language.Id,
             Priority = priority,
             SourceCode = codeExecution.SourceCode ?? "",
-            ValidationTag = executionKey
+            ValidationTag = executionKey,
+            TraceId = Activity.Current?.Id
         };
 
         return SendAsync(message, queue.ToLower(), Exchange, (byte)priority);

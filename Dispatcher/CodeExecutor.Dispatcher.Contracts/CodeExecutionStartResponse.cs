@@ -12,4 +12,7 @@ public sealed class CodeExecutionStartResponse
 
     /// <summary>Additional info about given execution.</summary>
     public string? Comment { get; set; }
+    
+    /// <summary>Open telemetry trace id.</summary>
+    public string? TraceId { get; set; }
 }

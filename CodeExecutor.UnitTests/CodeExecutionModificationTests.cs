@@ -97,11 +97,11 @@ public class CodeExecutionModificationTests : DbTestBase
     [Theory]
     [InlineData(true, CodeExecutionStatus.Error)]
     [InlineData(true, CodeExecutionStatus.Pending)]
-    [InlineData(false, null)]
+    [InlineData(false, CodeExecutionStatus.None)]
     [InlineData(false, CodeExecutionStatus.Started)]
     [InlineData(false, CodeExecutionStatus.Finished)]
     [InlineData(false, CodeExecutionStatus.Pending)]
-    public async Task SetExecutionResultsCheckStatus(bool? isError, CodeExecutionStatus? status)
+    public async Task SetExecutionResultsCheckStatus(bool? isError, CodeExecutionStatus status)
     {
         var guid = await StartExecutionInternal();
         var db = await ExecutionsExplorerRepository.GetAsync(guid);

@@ -1,4 +1,6 @@
-﻿using CodeExecutor.Dispatcher.Services.Interfaces;
+﻿using System.Diagnostics;
+using CodeExecutor.Dispatcher.Services.Interfaces;
+using CodeExecutor.Telemetry;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +31,11 @@ public sealed class CodeExecutionsModificationController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(validationTag))
             throw new BadRequestException("ValidationTag header cannot be empty");
+
+        using var activity = TelemetryProvider.StartNew("Execution modification");
+        activity?.AddTag("execution.Id", executionResult.Guid);
+        activity?.AddTag("execution.Status", executionResult.Status);
+        activity?.AddTag("execution.IsError", executionResult.IsError);
 
         await dispatcher.SetExecutionResultsAsync(executionResult, validationTag);
         return Ok();

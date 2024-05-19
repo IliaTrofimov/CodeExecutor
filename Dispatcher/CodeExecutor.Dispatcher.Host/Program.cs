@@ -3,6 +3,7 @@ using CodeExecutor.Common.Middleware;
 using CodeExecutor.Common.Security;
 using CodeExecutor.DB;
 using CodeExecutor.Dispatcher.Host;
+using CodeExecutor.Telemetry;
 using Microsoft.OpenApi.Models;
 
 
@@ -18,12 +19,12 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = builder.Environment.ApplicationName, Version = "v1" });
 });
 
-
 builder.Services.AddConsoleLogger();
 builder.Services.AddJwtBearer(builder.Configuration);
 builder.Services.AddDataBase(builder.Configuration);
 builder.Services.AddConfigs(builder.Configuration);
 builder.Services.AddServices(builder.Configuration);
+builder.Services.AddTelemetry(builder.Configuration, builder.Environment.ApplicationName);
 
 
 var app = builder.Build();

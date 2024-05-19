@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using CodeExecutor.Dispatcher.Contracts;
 
 
@@ -16,7 +17,8 @@ public class ExecutionResultHelper
             IsError = true,
             Data = data,
             Status = CodeExecutionStatus.Error,
-            Comment = comment
+            Comment = comment,
+            TraceId = Activity.Current?.Id
         };
 
     public CodeExecutionResult GetError(int errorsCount, string? data = null) =>
@@ -26,7 +28,8 @@ public class ExecutionResultHelper
             IsError = true,
             Data = data,
             Status = CodeExecutionStatus.Error,
-            Comment = $"Execution finished with {errorsCount} errors"
+            Comment = $"Execution finished with {errorsCount} errors",
+            TraceId = Activity.Current?.Id
         };
 
     public CodeExecutionResult GetSuccess(string? data = null) =>
@@ -36,7 +39,8 @@ public class ExecutionResultHelper
             IsError = false,
             Data = data,
             Status = CodeExecutionStatus.Finished,
-            Comment = "Execution finished successfully"
+            Comment = "Execution finished successfully",
+            TraceId = Activity.Current?.Id
         };
 
     public CodeExecutionResult GetStarted() =>
@@ -45,6 +49,7 @@ public class ExecutionResultHelper
             Guid = Guid,
             IsError = false,
             Comment = "Execution has started",
-            Status = CodeExecutionStatus.Started
+            Status = CodeExecutionStatus.Started,
+            TraceId = Activity.Current?.Id
         };
 }

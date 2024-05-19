@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Text.Json;
 using CodeExecutor.Common.Models.Entities;
 using CodeExecutor.Common.Models.Exceptions;
@@ -38,12 +39,30 @@ public class DefaultExceptionHandler
     private Task HandleExceptionAsync(HttpContext context, ApiException ex)
     {
         logger.LogError("Unexpected server error ({exception}):\n{message}", ex.GetType().Name, ex.Message);
+        
         ReadOnlyCollection<ApiFault> faults = ApiFault.Create(ex);
         var response = JsonSerializer.Serialize(faults);
+
+        AddErrorEvent(ex, response);
 
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = ex.Code;
 
         return context.Response.WriteAsync(response);
+    }
+
+    private static void AddErrorEvent(ApiException exception, string faultsString)
+    {
+        if (Activity.Current is null) return;
+
+        var tags = new ActivityTagsCollection
+        {
+            new("exception.Type", exception.GetType().Name),
+            new("exception.Message", exception.Message),
+            new("exception.Trace", exception.StackTrace)
+        };
+        
+        Activity.Current.AddEvent(new ActivityEvent("Unhandled exception", tags: tags));
+        Activity.Current.AddBaggage("Faults", faultsString);
     }
 }

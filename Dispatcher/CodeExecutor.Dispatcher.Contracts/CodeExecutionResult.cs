@@ -16,5 +16,8 @@ public sealed class CodeExecutionResult
     public bool? IsError { get; set; }
 
     /// <summary>Execution status.</summary>
-    public CodeExecutionStatus? Status { get; set; }
+    public CodeExecutionStatus Status { get; set; } = CodeExecutionStatus.None;
+    
+    /// <summary>Open telemetry trace id.</summary>
+    public string? TraceId { get; set; }
 }

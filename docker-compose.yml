@@ -6,12 +6,16 @@
     image: codeexecutor.auth.host
     depends_on:
       - db
+      - jaeger
     ports:
       - "127.0.0.1:5020:80"
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://*:80/
       - Database__PostgreSql=Host=db;Port=5432;Database=postgres;Username=postgres;Password=1
+      - Telemetry__Tracing__ExporterUrl=http://oltp:4317
+      - Telemetry__Tracing__UseHttpTracing=true
+      - Telemetry__Tracing__UseSqlTracing=true
     build:
       context: .
       dockerfile: Auth/CodeExecutor.Auth.Host/Dockerfile
@@ -25,6 +29,7 @@
     depends_on:
       - db
       - rabbitmq
+      - jaeger
     ports:
       - "127.0.0.1:5030:80"
     environment:
@@ -35,6 +40,9 @@
       - RabbitMq__Port=5672
       - RabbitMq__Username=rmuser
       - RabbitMq__Password=rmpassword
+      - Telemetry__Tracing__ExporterUrl=http://oltp:4317
+      - Telemetry__Tracing__UseHttpTracing=true
+      - Telemetry__Tracing__UseSqlTracing=true
     build:
       context: .
       dockerfile: Dispatcher/CodeExecutor.Dispatcher.Host/Dockerfile
@@ -48,6 +56,7 @@
     depends_on:
       - code.executor.dispatcher
       - rabbitmq
+      - jaeger
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://*:81/
@@ -56,7 +65,8 @@
       - RabbitMq__Port=5672
       - RabbitMq__Username=rmuser
       - RabbitMq__Password=rmpassword
-      - HealthCheck__TestApi=true
+      - Telemetry__Tracing__ExporterUrl=http://oltp:4317
+      - Telemetry__Tracing__UseHttpTracing=true
     build:
       context: .
       dockerfile: Executors/CSharpCodeExecutor/Dockerfile
@@ -112,6 +122,26 @@
     networks:
       - backend
 
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - '16686:16686'
+    environment:
+      COLLECTOR_OTLP_ENABLED: 'true'
+    networks:
+      backend:
+        aliases:
+          - jaeger
+          - oltp
+
+  zookeeper:
+    image: bitnami/zookeeper
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: 'yes'
+    networks:
+      - backend
+      
+
 volumes:
   db:
   pgadmin:
@@ -120,6 +150,5 @@ volumes:
   auth:
   executors:
     
-
 networks:
   backend:

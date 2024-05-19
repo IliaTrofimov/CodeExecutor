@@ -19,6 +19,7 @@
       <ProjectReference Include="..\..\Common\CodeExecutor.Common.Models\CodeExecutor.Common.Models.csproj" />
       <ProjectReference Include="..\..\Common\CodeExecutor.Common\CodeExecutor.Common.csproj" />
       <ProjectReference Include="..\..\Infrastructure\CodeExecutor.DB\CodeExecutor.DB.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\CodeExecutor.Telemetry\CodeExecutor.Telemetry.csproj" />
       <ProjectReference Include="..\CodeExecutor.Auth.Contracts\CodeExecutor.Auth.Contracts.csproj" />
     </ItemGroup>
 

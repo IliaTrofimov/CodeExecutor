@@ -1,6 +1,8 @@
+using System.Diagnostics;
 using System.Text;
 using BaseCSharpExecutor.Api;
 using CodeExecutor.Dispatcher.Contracts;
+using CodeExecutor.Telemetry;
 using Microsoft.Extensions.Logging;
 
 
@@ -25,28 +27,34 @@ public abstract class BaseExecutor
     /// <summary>Start code execution.</summary>
     public Task StartExecution(ExecutionStartMessage startMessage)
     {
-        IEnumerable<Task> resultTasks = Process(startMessage)
-            .Select(res => dispatcherClient.SetResultAsync(res, startMessage.ValidationTag));
-
-        return Task.WhenAll(resultTasks);
+        var tasks = new List<Task>();
+        foreach (var result in Process(startMessage))
+        {
+            TelemetryProvider.AddEvent("Yield result", 
+                ("execution.Status", result.Status),
+                ("execution.IsError", result.IsError ?? false));
+            tasks.Add(dispatcherClient.SetResultAsync(result, startMessage.ValidationTag));
+        }
+        Activity.Current?.Stop();
+        return Task.WhenAll(tasks);
     }
 
 
     protected IEnumerable<CodeExecutionResult> Process(ExecutionStartMessage startMessage)
     {
         var helper = new ExecutionResultHelper(startMessage.Guid);
+        using var activity = TelemetryProvider.StartNew("Script execution");
 
         if (string.IsNullOrWhiteSpace(startMessage.SourceCode))
         {
             logger.LogInformation("Execution '{executionId}' has empty source code", startMessage.Guid);
             yield return helper.GetError("Execution has empty source code");
-
             yield break;
         }
 
         logger.LogInformation("Execution '{executionId}' is started", startMessage.Guid);
         yield return helper.GetStarted();
-
+        
         yield return RunScript(startMessage.SourceCode, helper);
     }
 

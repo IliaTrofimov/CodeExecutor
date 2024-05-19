@@ -1,5 +1,7 @@
-﻿using CodeExecutor.Common.Security;
+﻿using System.Diagnostics;
+using CodeExecutor.Common.Security;
 using CodeExecutor.Dispatcher.Services.Interfaces;
+using CodeExecutor.Telemetry;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
@@ -34,13 +36,21 @@ public sealed class CodeExecutionsController : ControllerBase
     {
         if (!HttpContext.TryParseUser(out var appUser))
             throw new UnauthorizedException();
-
+        
+        var rootId = TelemetryProvider.Current?.Id;
+        using var activity = TelemetryProvider.StartNew("Execution preprocessing");
+        
         var response = await dispatcher.StartCodeExecutionAsync(request, appUser.Id);
-
         var url = HttpContext.Request
             .GetEncodedUrl()
             .Replace("execute", $"result/{response.Guid}", StringComparison.OrdinalIgnoreCase);
 
+        if (activity is not null)
+        {
+            activity.AddTag("execution.Id", response.Guid);
+            activity.AddTag("execution.LanguageId", request.LanguageId);
+            response.TraceId = rootId ?? activity.Id;   
+        }
         return Created(url, response);
     }
 
@@ -53,9 +63,11 @@ public sealed class CodeExecutionsController : ControllerBase
             throw new UnauthorizedException();
 
         var result = await explorer.GetExecutionResultAsync(guid, appUser.Id);
-        return result is not null
-            ? Ok(result)
-            : NoContent();
+        if (result is null) return NoContent();
+
+        Activity.Current?.AddTag("execution.Id", guid);
+        return Ok(result);
+
     }
 
     /// <summary>Get code execution source code.</summary>
@@ -67,9 +79,11 @@ public sealed class CodeExecutionsController : ControllerBase
             throw new UnauthorizedException();
 
         var sourceCode = await explorer.GetSourceCodeAsync(guid, appUser.Id);
-        return sourceCode is not null
-            ? Ok(sourceCode)
-            : NoContent();
+        if (sourceCode is null) return NoContent();
+
+        Activity.Current?.AddTag("execution.Id", guid);
+        return Ok(sourceCode);
+
     }
 
     /// <summary>Get code executions for given user.</summary>

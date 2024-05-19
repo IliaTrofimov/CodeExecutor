@@ -52,7 +52,7 @@ public class CodeExecutionDispatcherApiMock : ICodeExecutionDispatcherClient
             CodeExecutionStatus.Started  => OnStarted,
             CodeExecutionStatus.Error    => OnSetError,
             CodeExecutionStatus.Finished => OnSetResult,
-            null                         => OnUpdate,
+            CodeExecutionStatus.None     => OnUpdate,
             _                            => null
         };
 

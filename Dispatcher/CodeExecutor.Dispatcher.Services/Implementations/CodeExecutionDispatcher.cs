@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using AutoMapper;
 using CodeExecutor.Dispatcher.Services.Interfaces;
 using Microsoft.Extensions.Logging;
@@ -40,7 +41,8 @@ public sealed class CodeExecutionDispatcher : ICodeExecutionDispatcher
 
         await SendMessage(execution, request.Priority, secret);
         logger.LogInformation("Execution {executionId} is waiting in queue", execution.Guid);
-
+        Activity.Current?.AddEvent(new ActivityEvent("Execution dispatched"));
+        
         return new CodeExecutionStartResponse
         {
             Guid = execution.Guid,
@@ -64,7 +66,7 @@ public sealed class CodeExecutionDispatcher : ICodeExecutionDispatcher
 
     public async Task SetExecutionResultsAsync(CodeExecutionResult result, string validationTag)
     {
-        if (result.Data is null && result.Comment is null && result.IsError is null && result.Status is null)
+        if (result.Data is null && result.Comment is null && result.IsError is null && result.Status is CodeExecutionStatus.None)
         {
             logger.LogInformation("CodeExecution {executionId} was not updated: empty update request", result.Guid);
             return;

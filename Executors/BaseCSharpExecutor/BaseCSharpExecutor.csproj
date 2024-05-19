@@ -14,6 +14,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Dispatcher\CodeExecutor.Dispatcher.Contracts\CodeExecutor.Dispatcher.Contracts.csproj" />
       <ProjectReference Include="..\..\Infrastructure\CodeExecutor.Messaging\CodeExecutor.Messaging.csproj" />
+      <ProjectReference Include="..\..\Infrastructure\CodeExecutor.Telemetry\CodeExecutor.Telemetry.csproj" />
     </ItemGroup>
     
 </Project>
