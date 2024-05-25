@@ -16,7 +16,7 @@ builder.Configuration.AddCommandLine(args).AddEnvironmentVariables();
 builder.Services.AddSingleton<IConfiguration, ConfigurationManager>();
 builder.Services.AddSingleton<IMessageReceiverConfig>(new MessageReceiverConfig(builder.Configuration.GetSection("RabbitMq")));
 builder.Services.AddSingleton<IDispatcherApiConfig>(new DispatcherApiConfig(builder.Configuration.GetSection("Api")));
-builder.Services.AddTelemetry(builder.Configuration, builder.Environment.ApplicationName);
+builder.Services.AddTelemetry(builder.Configuration, builder.Environment);
 
 builder.Services.AddSingleton<IMessageReceiver<ExecutionStartMessage>, ExecutionMessageReceiver>();
 builder.Services.AddSingleton<ICodeExecutionDispatcherClient, CodeExecutionDispatcherClient>();

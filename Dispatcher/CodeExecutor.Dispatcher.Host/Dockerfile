@@ -12,7 +12,7 @@ COPY ["Infrastructure/CodeExecutor.Telemetry/CodeExecutor.Telemetry.csproj", "In
 COPY ["Infrastructure/CodeExecutor.Messaging/CodeExecutor.Messaging.csproj", "Infrastructure/CodeExecutor.Messaging/"]
 COPY ["Dispatcher/CodeExecutor.Dispatcher.Contracts/CodeExecutor.Dispatcher.Contracts.csproj", "Dispatcher/CodeExecutor.Dispatcher.Contracts/"]
 COPY ["Dispatcher/CodeExecutor.Dispatcher.Host/CodeExecutor.Dispatcher.Host.csproj", "Dispatcher/CodeExecutor.Dispatcher.Host/"]
-COPY ["Dispatcher/CodeExecutor.Dispatcher.Host/CodeExecutor.Dispatcher.Services.csproj", "Dispatcher/CodeExecutor.Dispatcher.Services/"]
+COPY ["Dispatcher/CodeExecutor.Dispatcher.Services/CodeExecutor.Dispatcher.Services.csproj", "Dispatcher/CodeExecutor.Dispatcher.Services/"]
 RUN dotnet restore "Dispatcher/CodeExecutor.Dispatcher.Host/CodeExecutor.Dispatcher.Host.csproj"
 COPY . .
 WORKDIR "/src/Dispatcher/CodeExecutor.Dispatcher.Host"
@@ -24,5 +24,4 @@ RUN dotnet publish "CodeExecutor.Dispatcher.Host.csproj" -c Release -o /app/publ
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-RUN dotnet dev-certs https --trust
 ENTRYPOINT ["dotnet", "CodeExecutor.Dispatcher.Host.dll"]

@@ -22,8 +22,8 @@ public class ExecutionMessageReceiver : BasicMessageReceiver<ExecutionStartMessa
 
     public override async void HandleMessage(ExecutionStartMessage message)
     {
-        using var activity = TelemetryProvider.StartNew("Receive execution", message.TraceId, ActivityKind.Consumer);
-
+        using var activity = TraceRoot.Start("Receive execution", message.TraceId, ActivityKind.Consumer);   
+        
         try
         {
             activity?.AddTag("execution.Id", message.Guid);

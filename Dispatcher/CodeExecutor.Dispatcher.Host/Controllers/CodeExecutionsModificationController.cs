@@ -14,7 +14,7 @@ public sealed class CodeExecutionsModificationController : ControllerBase
     private readonly ILogger<CodeExecutionsController> logger;
     private readonly ICodeExecutionDispatcher dispatcher;
 
-
+    
     public CodeExecutionsModificationController(ILogger<CodeExecutionsController> logger,
                                                 ICodeExecutionDispatcher dispatcher)
     {
@@ -31,12 +31,16 @@ public sealed class CodeExecutionsModificationController : ControllerBase
     {
         if (string.IsNullOrWhiteSpace(validationTag))
             throw new BadRequestException("ValidationTag header cannot be empty");
-
-        using var activity = TelemetryProvider.StartNew("Execution modification");
-        activity?.AddTag("execution.Id", executionResult.Guid);
-        activity?.AddTag("execution.Status", executionResult.Status);
-        activity?.AddTag("execution.IsError", executionResult.IsError);
-
+        
+        using var activity = TraceRoot.Start("Execution modification");
+        if (activity is not null)
+        {
+            activity.AddTag("execution.Id", executionResult.Guid);
+            activity.AddTag("execution.Status", executionResult.Status);
+            activity.AddTag("execution.IsError", executionResult.IsError);   
+            activity.AddTag("execution.Comment", executionResult.Comment);   
+        }
+        
         await dispatcher.SetExecutionResultsAsync(executionResult, validationTag);
         return Ok();
     }

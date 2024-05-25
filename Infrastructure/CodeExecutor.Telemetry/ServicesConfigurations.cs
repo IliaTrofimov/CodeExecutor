@@ -1,8 +1,7 @@
-using System.Diagnostics;
-using System.Reflection;
 using CodeExecutor.Common.Models.Configs;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -15,22 +14,22 @@ public static class ServicesConfigurations
     /// <summary>
     /// Configure OTLP tracing and metrics from given configuration.
     /// </summary>
-    public static void AddTelemetry(this IServiceCollection services, IConfiguration config, string? serviceName = null)
+    public static void AddTelemetry(this IServiceCollection services, IConfiguration config, IHostEnvironment env)
     {
         var telemetryConfig = config.GetSection("Telemetry");
         if (!telemetryConfig.Exists()) return;
+        
+        var serviceInstance = config.GetValue<string>("ServiceInstance");
+        serviceInstance = serviceInstance is not null ? $"1.0.0-{serviceInstance}" : "1.0.0";
+        
+        SetupTelemetry(services, telemetryConfig, env.ApplicationName, serviceInstance);
+        SetupMetrics(services, telemetryConfig, env.ApplicationName, serviceInstance);
 
-        serviceName ??= (Assembly.GetCallingAssembly().GetName().Name ?? "Service")
-            .Replace(".Host", "");
-
-        SetupTelemetry(services, telemetryConfig, serviceName);
-        SetupMetrics(services, telemetryConfig, serviceName);
-
-        TelemetryProvider.Create(serviceName);
+        TraceRoot.Create(env.ApplicationName, serviceInstance);
     }
     
 
-    private static void SetupTelemetry(IServiceCollection services, IConfiguration config, string serviceName)
+    private static void SetupTelemetry(IServiceCollection services, IConfiguration config, string serviceName, string serviceVersion)
     {
         var tracingConfig = config.GetSection("Tracing");
         if (!tracingConfig.Exists()) return;
@@ -38,6 +37,7 @@ public static class ServicesConfigurations
         var url = tracingConfig.GetValue("ExporterUrl");
         var useHttpTracing = UseInstrumentation(tracingConfig, "UseHttpTracing", false);
         var useSqlTracing = UseInstrumentation(tracingConfig, "UseSqlTracing", false);
+        var useConsoleTracing = UseInstrumentation(tracingConfig, "UseConsoleTracing", false);
 
         services.AddOpenTelemetry().WithTracing(builder =>
         {
@@ -46,12 +46,12 @@ public static class ServicesConfigurations
             builder.AddOtlpExporter(options =>
                 options.Endpoint = new Uri(url)
             );
-            builder.ConfigureResource(builder =>
+            builder.ConfigureResource(options =>
             {
-                builder.AddService(serviceName, serviceVersion: "1.0.0");
-                builder.AddEnvironmentVariableDetector();
+                options.AddService(serviceName, serviceVersion: serviceVersion);
+                options.AddEnvironmentVariableDetector();
             });
-
+            
             if (useSqlTracing)
             {
                 builder.AddEntityFrameworkCoreInstrumentation(options =>
@@ -66,11 +66,14 @@ public static class ServicesConfigurations
             }
 
             if (useHttpTracing)
-                builder.AddHttpClientInstrumentation(options => options.RecordException = true);
+                builder.AddHttpClientInstrumentation();
+
+            if (useConsoleTracing)
+                builder.AddConsoleExporter();
         });
     }
-
-    private static void SetupMetrics(IServiceCollection services, IConfiguration config, string serviceName)
+    
+    private static void SetupMetrics(IServiceCollection services, IConfiguration config, string serviceName, string serviceVersion)
     {
         var metricsConfig = config.GetSection("Metrics");
         if (!metricsConfig.Exists()) return;
@@ -79,16 +82,24 @@ public static class ServicesConfigurations
 
         services.AddOpenTelemetry().WithMetrics(builder =>
         {
-            builder.AddAspNetCoreInstrumentation();
             builder.AddOtlpExporter(options =>
                 options.Endpoint = new Uri(url)
             );
-
             builder.SetResourceBuilder(ResourceBuilder.CreateDefault()
-                .AddService(serviceName, serviceVersion: "1.0.0")
+                .AddService(serviceName, serviceVersion: serviceVersion)
             );
-
-            builder.AddHttpClientInstrumentation();
+            
+            builder.AddAspNetCoreInstrumentation();
+            builder.AddPrometheusExporter();
+            
+            builder.AddMeter("Microsoft.AspNetCore.Hosting");
+            builder.AddMeter("Microsoft.AspNetCore.Server.Kestrel");
+            builder.AddMeter("Microsoft.AspNetCore.Hosting");
+            builder.AddMeter("Microsoft.AspNetCore.Server.Kestrel");
+            builder.AddMeter("Microsoft.AspNetCore.Http.Connections");
+            builder.AddMeter("Microsoft.AspNetCore.Routing");
+            builder.AddMeter("Microsoft.AspNetCore.Diagnostics");
+            builder.AddMeter("Microsoft.AspNetCore.RateLimiting");
         });
     }
 

@@ -24,7 +24,7 @@ builder.Services.AddJwtBearer(builder.Configuration);
 builder.Services.AddDataBase(builder.Configuration);
 builder.Services.AddConfigs(builder.Configuration);
 builder.Services.AddServices(builder.Configuration);
-builder.Services.AddTelemetry(builder.Configuration, builder.Environment.ApplicationName);
+builder.Services.AddTelemetry(builder.Configuration, builder.Environment);
 
 
 var app = builder.Build();
@@ -36,6 +36,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<DefaultExceptionHandler>();
 app.UseMiddleware<DefaultHttpLogger>();
+app.UseMiddleware<ServiceInfoMiddleware>(builder);
 app.UseRouting();
 app.UseDefaultCors(builder.Configuration);
 app.UseAuthentication();

@@ -7,7 +7,6 @@
     <UseAppHost>false</UseAppHost>
     <LangVersion>12</LangVersion>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <UserSecretsId>dd88a817-299e-4f2b-b383-e6ba36d54169</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

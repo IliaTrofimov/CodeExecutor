@@ -19,7 +19,6 @@ public sealed class CodeExecutionsController : ControllerBase
     private readonly ICodeExecutionDispatcher dispatcher;
     private readonly ICodeExecutionExplorer explorer;
 
-
     public CodeExecutionsController(ILogger<CodeExecutionsController> logger,
                                     ICodeExecutionExplorer explorer,
                                     ICodeExecutionDispatcher dispatcher)
@@ -36,9 +35,8 @@ public sealed class CodeExecutionsController : ControllerBase
     {
         if (!HttpContext.TryParseUser(out var appUser))
             throw new UnauthorizedException();
-        
-        var rootId = TelemetryProvider.Current?.Id;
-        using var activity = TelemetryProvider.StartNew("Execution preprocessing");
+
+        using var activity = TraceRoot.Start("Execution preprocessing");
         
         var response = await dispatcher.StartCodeExecutionAsync(request, appUser.Id);
         var url = HttpContext.Request
@@ -49,7 +47,7 @@ public sealed class CodeExecutionsController : ControllerBase
         {
             activity.AddTag("execution.Id", response.Guid);
             activity.AddTag("execution.LanguageId", request.LanguageId);
-            response.TraceId = rootId ?? activity.Id;   
+            response.TraceId = activity.RootId ?? activity.Id;
         }
         return Created(url, response);
     }
@@ -67,7 +65,6 @@ public sealed class CodeExecutionsController : ControllerBase
 
         Activity.Current?.AddTag("execution.Id", guid);
         return Ok(result);
-
     }
 
     /// <summary>Get code execution source code.</summary>
@@ -83,7 +80,6 @@ public sealed class CodeExecutionsController : ControllerBase
 
         Activity.Current?.AddTag("execution.Id", guid);
         return Ok(sourceCode);
-
     }
 
     /// <summary>Get code executions for given user.</summary>

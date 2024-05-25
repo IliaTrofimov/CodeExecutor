@@ -30,9 +30,7 @@ public abstract class BaseExecutor
         var tasks = new List<Task>();
         foreach (var result in Process(startMessage))
         {
-            TelemetryProvider.AddEvent("Yield result", 
-                ("execution.Status", result.Status),
-                ("execution.IsError", result.IsError ?? false));
+            TracingHelper.AddExecutionResultEvent(result);
             tasks.Add(dispatcherClient.SetResultAsync(result, startMessage.ValidationTag));
         }
         Activity.Current?.Stop();
@@ -43,7 +41,7 @@ public abstract class BaseExecutor
     protected IEnumerable<CodeExecutionResult> Process(ExecutionStartMessage startMessage)
     {
         var helper = new ExecutionResultHelper(startMessage.Guid);
-        using var activity = TelemetryProvider.StartNew("Script execution");
+        using var activity = TraceRoot.Start("Script execution");
 
         if (string.IsNullOrWhiteSpace(startMessage.SourceCode))
         {
@@ -72,9 +70,13 @@ public abstract class BaseExecutor
             return true;
         }
 
+        TracingHelper.AddExecutionStartedEvent(GetType());
         try
         {
-            RunScriptInternal(sourceCode, CatchScriptException);
+            using (var activity = TraceRoot.Start("Internal script execution"))
+            {
+                RunScriptInternal(sourceCode, CatchScriptException);
+            }
             Console.SetOut(standardOutput);
 
             if (errorsCount > 0)
@@ -95,6 +97,10 @@ public abstract class BaseExecutor
                 helper.Guid, ex.GetType(), ex);
 
             return helper.GetError($"Execution finished with unhandled error {ex.GetType()}");
+        }
+        finally
+        {
+            TracingHelper.AddExecutionFinishedEvent(GetType(), errorsCount);
         }
     }
 
